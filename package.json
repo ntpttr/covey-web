@@ -1,0 +1,32 @@
+{
+  "name": "game-groups",
+  "version": "0.1.0",
+  "description": "Application for groups playing tabletop games together.",
+  "main": "server/app.js",
+  "scripts": {
+    "start": "node server/app.js",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ntpttr/game-groups.git"
+  },
+  "author": "Nate Potter <ntpttr@gmail.com>",
+  "contributors": [
+    "Tippy Jackson <tippyjax@gmail.com>"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ntpttr/game-groups/issues"
+  },
+  "homepage": "https://github.com/ntpttr/game-groups#readme",
+  "dependencies": {
+    "bcrypt": "^2.0.1",
+    "express": "^4.16.3",
+    "mongoose": "^5.1.5"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0"
+  }
+}
