@@ -12,6 +12,7 @@ const port = parseInt(process.env.PORT, 10) || 8080;
 const User = require('./models/User');
 const Group = require('./models/Group');
 const login = require('./routes/login');
+const groups = require('./routes/groups');
 const users = require('./routes/users');
 
 var app = express();
@@ -22,6 +23,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use('/login', login);
+app.use('/groups', groups);
 app.use('/users', users);
 
 mongoose.connect(url, function(err) {

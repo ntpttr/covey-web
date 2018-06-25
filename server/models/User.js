@@ -38,15 +38,17 @@ userSchema.methods.comparePassword = function(candidatePassword, callback) {
     });
 }
 
-userSchema.methods.addGroup = function(group_id) {
-    if (this.groups.indexOf(group_id) === -1) {
-        this.groups.push(group_id);
+userSchema.methods.addGroup = function(groupId) {
+    if (this.groups.indexOf(groupId) === -1) {
+        if (mongoose.Types.ObjectId.isValid(groupId)) {
+            this.groups.push(groupId);
+        }
     }
     return this.save();
 }
 
-userSchema.methods.deleteGroup = function(group_id) {
-    this.groups = this.groups.filter(function(id) { return id !== group_id; });
+userSchema.methods.deleteGroup = function(groupId) {
+    this.groups = this.groups.filter(function(id) { return id != groupId; });
     return this.save();
 }
 

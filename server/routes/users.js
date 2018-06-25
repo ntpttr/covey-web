@@ -3,12 +3,14 @@ const router = express.Router();
 
 const User = require('../models/User');
 
+// List all users
 router.get('/', function(req, res) {
     User.find({}, function(err, users) {
         res.json(users);
     });
 });
 
+// Get specific user
 router.get('/:userId', function(req, res) {
     id = req.params.userId;
     User.findById(id, function(err, user) {
@@ -16,6 +18,7 @@ router.get('/:userId', function(req, res) {
     });
 });
 
+// Create new user
 router.post('/', function(req, res) {
     user = new User(req.body);
 
@@ -36,6 +39,7 @@ router.post('/', function(req, res) {
     });
 });
 
+// Delete user
 router.delete('/:userId', function(req, res) {
     id = req.params.userId;
     User.remove({_id: id}, function(err) {

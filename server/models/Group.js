@@ -7,15 +7,19 @@ let groupSchema = new mongoose.Schema({
     users: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ]
 });
 
-groupSchema.methods.addUser = function(user_id) {
-    if (this.users.indexOf(user_id) === -1) {
-        this.users.push(user_id);
+groupSchema.methods.addUser = function(userId) {
+    if (this.users.indexOf(userId) === -1) {
+        if (mongoose.Types.ObjectId.isValid(userId)) {
+            this.users.push(userId);
+        }
     }
     return this.save();
 }
 
-groupSchema.methods.deleteUser = function(user_id) {
-    this.users = this.users.filter(function(id) { return id !== user_id; });
+groupSchema.methods.deleteUser = function(userId) {
+    console.log(this.users);
+    this.users = this.users.filter(function(id) { return id != userId; });
+    console.log(this.users);
     return this.save();
 }
 
