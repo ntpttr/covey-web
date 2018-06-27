@@ -38,12 +38,17 @@ var getGroupsByName = function(req, res) {
 
 var deleteGroupById = function(req, res, next) {
     var id = req.params.ident;
-    Group.findByIdAndRemove(id, function(err) {
+    Group.findByIdAndRemove(id, function(err, group) {
         if (err) {
             // A name may have been passed, try deleteGroupByName
             next();
         } else {
-            res.json({'status': true});
+            if (group) {
+                res.json({'status': true});
+            } else {
+                res.json({'status': false,
+                          'message': 'Group with ID ' + id + ' not found!'});
+            }
         }
     });
 }
