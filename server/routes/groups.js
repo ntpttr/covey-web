@@ -4,20 +4,90 @@ const router = express.Router();
 const Group = require('../models/Group');
 const User = require('../models/User');
 
+var getGroupById = function(req, res, next) {
+    var id = req.params.ident;
+    Group.findById(id, function(err, group) {
+        if (err) {
+            // A name may have been passed, check getGroupsByName
+            next();
+        } else {
+            if (group) {
+                res.json({'status': true, 'group': group});
+            } else {
+                res.json({'status': false,
+                          'message': 'Group with ID ' + id + ' not found!'});
+            }
+        }
+    });
+}
+
+var getGroupsByName = function(req, res) {
+    var name = req.params.ident;
+    Group.find({name: name}, function(err, groups) {
+        if (err) {
+            res.json({'status': false,
+                      'message': 'Database error finding groups with name ' + name + '!'});
+        } else if (groups.length > 0) {
+            res.json({'status': true, 'groups': groups});
+        } else {
+            res.json({'status': false,
+                      'message': 'Group with name ' + name + ' not found!'});
+        }
+    });
+}
+
+var deleteGroupById = function(req, res, next) {
+    var id = req.params.ident;
+    Group.findByIdAndRemove(id, function(err) {
+        if (err) {
+            // A name may have been passed, try deleteGroupByName
+            next();
+        } else {
+            res.json({'status': true});
+        }
+    });
+}
+
+var deleteGroupByName = function(req, res) {
+    var name = req.params.ident;
+    Group.find({name: name}, function(err, groups) {
+        if (err) {
+            res.json({'status': false,
+                      'message': 'Database error deleting group with name ' + name + '!'});
+        } else if (groups.length == 0) {
+            res.json({'status': false,
+                      'message': 'Group with name ' + name + ' not found!'});
+        } else if (groups.length > 1) {
+            res.json({'status': false,
+                      'message': 'Multiple groups found with name ' + name + '. Must delete by ID.'});
+        } else {
+            var group = groups[0];
+            try {
+                group.remove();
+                res.json({'status': true});
+            } catch(err) {
+                res.json({'status': false,
+                          'message': 'Error deleting group ' + name + '!'});
+            }
+        }
+    });
+}
+
 // List all groups
 router.get('/', function(req, res) {
     Group.find({}, function(err, groups) {
-        res.json(groups);
+        if (err) {
+            res.json({'status': false,
+                      'message': 'Database error finding groups!'});
+        } else {
+            res.json({'status': true,
+                      'groups': groups});
+        }
     });
 });
 
-// Get specific group
-router.get('/:groupId', function(req, res) {
-    id = req.params.groupId;
-    Group.findById(id, function(err, group) {
-        res.json(group);
-    });
-});
+// Get group by id
+router.get('/:ident', [getGroupById, getGroupsByName]);
 
 // Create new group
 router.post('/', function(req, res) {
@@ -25,26 +95,18 @@ router.post('/', function(req, res) {
 
     group.save(function(err) {
         if (err) {
-            var errMessage = 'Error saving group!';
             console.log(err.message);
-            res.send(errMessage);
+            res.json({'status': false,
+                      'message': 'Error saving group!'});
             return;
         }
-        res.json(group);
+        res.json({'status': true,
+                  'group': group});
     });
 });
 
 // Delete group
-router.delete('/:groupId', function(req, res) {
-    id = req.params.groupId;
-    Group.remove({_id: id}, function(err) {
-        if (err) {
-            res.send('Error deleting group!');
-        } else {
-            res.send('Group ' + id + ' deleted successfully.');
-        }
-    });
-});
+router.delete('/:ident', [deleteGroupById, deleteGroupByName]);
 
 // Add user to group
 router.post('/:groupId/users/:userId', function (req, res, next) {
@@ -53,27 +115,32 @@ router.post('/:groupId/users/:userId', function (req, res, next) {
     Group.findById(groupId, function (err, group) {
         if (err) {
             if (err.name === 'CastError') {
-                res.json({'err': 'Invalid Group ID!'});
+                res.json({'status': false,
+                          'message': 'Invalid Group ID!'});
             } else {
-                res.json({'err': err.message});
+                res.json({'status': false,
+                          'message':  err.message});
             }
             return;
         }
         User.findById(userId, function (err, user) {
             if (err) {
                 if (err.name === 'CastError') {
-                    res.json({'err': 'Invalid User ID!'});
+                    res.json({'status': false,
+                              'message': 'Invalid User ID!'});
                 } else {
-                    res.json({'err': err.message});
+                    res.json({'status': false,
+                              'message': err.message});
                 }
                 return;
             }
             try {
                 group.addUser(user._id);
                 user.addGroup(group._id);
-                res.json({'group': group, 'user': user});
+                res.json({'status': true});
             } catch(err) {
-                res.json({'err': err});
+                res.json({'status': false,
+                          'message': 'Error adding user to group.'});
             }
         });
     });
@@ -86,24 +153,28 @@ router.delete('/:groupId/users/:userId', function(req, res) {
     Group.findById(groupId, function(err, group) {
         if (err) {
             if (err.name === 'CastError') {
-                res.json({'err': 'Invalid Group ID.'});
+                res.json({'status': false,
+                          'message': 'Invalid Group ID.'});
             } else {
-                res.json({'err': err.message});
+                res.json({'status': false,
+                          'message': err.message});
             }
             return;
         }
         User.findById(userId, function(err, user) {
             if (err) {
                 if (err.name === 'CastError') {
-                    res.json({'err': 'Invalid User ID.'});
+                    res.json({'status': false,
+                              'message': 'Invalid User ID.'});
                 } else {
-                    res.json({'err': err.message});
+                    res.json({'status': false,
+                              'message': err.message});
                 }
                 return;
             }
             if (group) group.deleteUser(userId);
             if (user) user.deleteGroup(groupId);
-            res.json({'group': group, 'user': user});
+            res.json({'status': true});
         });
     });
 });
