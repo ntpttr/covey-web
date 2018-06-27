@@ -6,15 +6,29 @@ const User = require('../models/User');
 // List all users
 router.get('/', function(req, res) {
     User.find({}, function(err, users) {
-        res.json(users);
+        if (err) {
+            res.json({'status': false,
+                      'message': 'Database error finding users!'});
+        } else {
+            res.json({'status': true,
+                      'users': users});
+        }
     });
 });
 
 // Get specific user
-router.get('/:userId', function(req, res) {
-    id = req.params.userId;
-    User.findById(id, function(err, user) {
-        res.json(user);
+router.get('/:username', function(req, res) {
+    name = req.params.username;
+    User.findOne({username: name}, function(err, user) {
+        if (err) {
+            res.json({'status': false,
+                      'message': 'Database error finding user ' + name + '!'});
+        } else if (user) {
+            res.json({'status': true, 'user': user});
+        } else {
+            res.json({'status': false,
+                      'message': 'User ' + name + ' not found!'});
+        }
     });
 });
 
@@ -27,12 +41,13 @@ router.post('/', function(req, res) {
             var errMessage = '';
             if (err.code === 11000) {
                 // Duplicate username found
-                errMessage = 'User already exists!';
+                errMessage = 'Username already exists!';
             } else {
                 errMessage = 'Error saving user!';
             }
             console.log(err.message);
-            res.send(errMessage);
+            res.json({'status': false,
+                      'message': errMessage});
             return;
         }
         res.json(user);
@@ -40,15 +55,20 @@ router.post('/', function(req, res) {
 });
 
 // Delete user
-router.delete('/:userId', function(req, res) {
-    id = req.params.userId;
-    User.remove({_id: id}, function(err) {
+router.delete('/:username', function(req, res) {
+    name = req.params.username;
+    User.findOneAndRemove({username: name}, function(err, user) {
         if (err) {
-            res.send('Error deleting user!');
+            res.json({'status': false,
+                      'message': 'Database error deleting user ' + name + '!'});
+        } else if (user) {
+            res.json({'status': true,
+                      'message': 'User ' + name + ' deleted successfully.'});
         } else {
-            res.send('User ' + id + ' deleted successfully.');
+            res.json({'status': false,
+                      'message': 'User ' + name + ' not found.'});
         }
     });
 });
 
-module.exports = router;            
+module.exports = router;
