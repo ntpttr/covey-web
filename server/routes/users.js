@@ -13,8 +13,8 @@ var getUserById = function(req, res, next) {
             if (user) {
                 res.json({'status': true, 'user': user});
             } else {
-                res.json({'status': false,
-                          'message': 'User with ID ' + id + ' not found!'});
+                // A name may have been passed, check getUserByName
+                next();
             }
         }
     });
@@ -30,7 +30,7 @@ var getUserByName = function(req, res) {
             res.json({'status': true, 'user': user});
         } else {
             res.json({'status': false,
-                      'message': 'User with name ' + name + ' not found!'});
+                      'message': 'User with name or ID ' + name + ' not found!'});
         }
     });
 }

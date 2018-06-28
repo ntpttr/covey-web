@@ -14,8 +14,8 @@ var getGroupById = function(req, res, next) {
             if (group) {
                 res.json({'status': true, 'group': group});
             } else {
-                res.json({'status': false,
-                          'message': 'Group with ID ' + id + ' not found!'});
+                // A name may have been passed, check getGroupsByName
+                next();
             }
         }
     });
@@ -31,7 +31,7 @@ var getGroupsByName = function(req, res) {
             res.json({'status': true, 'groups': groups});
         } else {
             res.json({'status': false,
-                      'message': 'Group with name ' + name + ' not found!'});
+                      'message': 'Group with name or ID ' + name + ' not found!'});
         }
     });
 }
