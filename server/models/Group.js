@@ -17,9 +17,7 @@ groupSchema.methods.addUser = function(userId) {
 }
 
 groupSchema.methods.deleteUser = function(userId) {
-    console.log(this.users);
     this.users = this.users.filter(function(id) { return id != userId; });
-    console.log(this.users);
     return this.save();
 }
 
