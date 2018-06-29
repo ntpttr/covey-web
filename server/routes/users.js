@@ -3,6 +3,25 @@ const router = express.Router();
 
 const User = require('../models/User');
 
+var authenticate = function(creds, callback) {
+    var username = creds.username;
+    var password = creds.password;
+    User.findOne({username: username}, function(err, user) {
+        if (err) { // err indicates error, not no result found
+            callback({'err': err});
+            return;
+        }
+
+        if (user) { // found the user!
+            user.comparePassword(password, function(err, isMatch) {
+                callback({'status': isMatch, 'foundUser': true});
+            });
+        } else {
+            callback({'status': false, 'foundUser': false});
+        }
+    });
+};
+
 var getUserById = function(req, res, next) {
     var id = req.params.ident;
     User.findById(id, function(err, user) {
@@ -103,6 +122,14 @@ router.post('/', function(req, res) {
         }
         res.json({'status': true,
                   'user': user});
+    });
+});
+
+// Login
+router.post('/login', function(req, res) {
+    var creds = req.body;
+    authenticate(creds, function(auth) {
+        res.json(auth);
     });
 });
 
