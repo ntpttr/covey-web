@@ -1,5 +1,5 @@
 {
-  "name": "game-groups",
+  "name": "Covey",
   "version": "0.1.0",
   "description": "Application for groups playing tabletop games together.",
   "main": "server/app.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/ntpttr/game-groups.git"
+    "url": "git+ssh://git@github.com/ntpttr/Covey.git"
   },
   "author": "Nate Potter <ntpttr@gmail.com>",
   "contributors": [
@@ -17,9 +17,9 @@
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ntpttr/game-groups/issues"
+    "url": "https://github.com/ntpttr/Covey/issues"
   },
-  "homepage": "https://github.com/ntpttr/game-groups#readme",
+  "homepage": "https://github.com/ntpttr/Covey#readme",
   "dependencies": {
     "bcrypt": "^2.0.1",
     "body-parser": "^1.18.3",
