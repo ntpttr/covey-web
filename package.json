@@ -2,9 +2,11 @@
   "name": "Covey",
   "version": "0.1.0",
   "description": "Application for groups playing tabletop games together.",
-  "main": "server/server.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node server/server.js",
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js",
     "test": "mocha"
   },
   "repository": {

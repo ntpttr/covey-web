@@ -1,6 +1,6 @@
 // server/app.js
 
-const config = require('../config');
+const config = require('./config');
 const express = require('express');
 const next = require('next');
 const bodyParser =require('body-parser');
@@ -11,35 +11,39 @@ const mongoose = require('mongoose');
 const dev = process.env.NODE_ENV !== 'production';
 const url = process.env.MONGODB_URI || config.db.development;
 const port = parseInt(process.env.PORT, 10) || 3000;
-const User = require('./models/User');
-const Group = require('./models/Group');
-const users = require('./routes/users');
-const groups = require('./routes/groups');
+const users = require('./server/routes/users');
+const groups = require('./server/routes/groups');
 
 mongoose.connect(url, function(err) {
     if (err) throw err;
 });
 
 const app = next({dev});
+const handle = app.getRequestHandler();
 
-app.prepare()
-.then(() => {
+app.prepare().then(() => {
     const server = express();
-
-    server.use(express.static(__dirname + '/../client'));
 
     // parse application/json
     server.use(bodyParser.json());
     // parse application/x-www-form-urlencoded
     server.use(bodyParser.urlencoded({extended: true}));
 
+    // Server-side API
     server.use('/groups', groups);
     server.use('/users', users);
 
-    server.listen(port);
-    console.log("Server listening on port " + port + "...");
-})
-.catch((ex) => {
-    console.error(ex.stack)
-    process.exit(1);
+    // Render pages
+    server.get('/login', (req, res) => {
+      return app.render(req, res, '/login', req.query);
+    });
+
+    server.get('*', (req, res) => {
+        return handle(req, res);
+    });
+
+    server.listen(port, err => {
+        if (err) throw err;
+        console.log("Server listening on port " + port + "...");
+    });
 });
