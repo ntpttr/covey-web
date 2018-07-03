@@ -41,7 +41,6 @@ export default class extends React.Component {
         }).then((res) => {
             return res.json();
         }).then((data) => {
-            console.log(data);
             if (data.err) {
                 console.log('Error: ' + data.err);
             } else if (data.status) {
