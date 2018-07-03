@@ -8,7 +8,6 @@ export default class extends React.Component {
         this.state = {
             username: '',
             password: '',
-            loggedIn: false,
         }
 
         this.updateUsername = this.updateUsername.bind(this);
@@ -50,23 +49,17 @@ export default class extends React.Component {
             if (data.status == false) {
                 console.log(data.message);
             } else {
-                this.state.loggedIn = true;
-                console.log('Registered user!');
+                this.props.updateLogin(true);
             }
         });
     }
 
     render() {
         return (
-            <div>
-                <div className='registerDiv'>
-                    <input type='text' value={this.state.username} onChange={this.updateUsername} placeholder='username'/>
-                    <input type='password' value={this.state.password} onChange={this.updatePassword} placeholder='password'/>
-                    <button onClick={this.registerUser}><span>Register</span></button>
-                </div>
-                <ul>
-                    <li><Link href='/'><a>Home</a></Link></li>
-                </ul>
+            <div className='registerDiv'>
+                <input type='text' value={this.state.username} onChange={this.updateUsername} placeholder='username'/>
+                <input type='password' value={this.state.password} onChange={this.updatePassword} placeholder='password'/>
+                <button onClick={this.registerUser}><span>Register</span></button>
             </div>
         );
     }

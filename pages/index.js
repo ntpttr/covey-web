@@ -1,4 +1,5 @@
 import Login from '../components/login';
+import Register from '../components/register';
 
 import React from 'react';
 import Link from 'next/link';
@@ -8,9 +9,11 @@ export default class extends React.Component {
         super(props);
         this.state = {
             loggedIn: false,
+            registerDisplay: false,
         }
 
         this.updateLogin = this.updateLogin.bind(this);
+        this.displayRegister = this.displayRegister.bind(this);
         this.renderLogin = this.renderLogin.bind(this);
         this.renderHome = this.renderHome.bind(this);
     }
@@ -21,15 +24,32 @@ export default class extends React.Component {
         });
     }
 
+    displayRegister(display) {
+        this.setState({
+            registerDisplay: display,
+        });
+    }
+
     renderLogin() {
-        return (
-            <div>
-                <Login updateLogin={this.updateLogin}/>
-                <ul>
-                    <li><Link href='/register'><a>Register</a></Link></li>
-                </ul>
-            </div>
-        )
+        if (!this.state.registerDisplay) {
+            return (
+                <div>
+                    <Login updateLogin={this.updateLogin}/>
+                    <button type='button' onClick={() => this.displayRegister(true)}>
+                        New User?
+                    </button>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <Register updateLogin={this.updateLogin}/>
+                    <button type='button' onClick={() => this.displayRegister(false)}>
+                        Back
+                    </button>
+                </div>
+            )
+        }
     }
 
     renderHome() {

@@ -33,10 +33,6 @@ app.prepare().then(() => {
     server.use('/groups', groups);
     server.use('/users', users);
 
-    server.get('/register', (req, res) => {
-      return app.render(req, res, '/register', req.query);
-    });
-
     server.get('*', (req, res) => {
         return handle(req, res);
     });
