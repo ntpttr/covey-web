@@ -7,7 +7,6 @@ export default class extends React.Component {
         this.state = {
             username: '',
             password: '',
-            loggedIn: false,
         }
 
         this.updateUsername = this.updateUsername.bind(this);
@@ -43,11 +42,11 @@ export default class extends React.Component {
         }).then((data) => {
             if (data.err) {
                 console.log('Error: ' + data.err);
+                this.props.updateLogin(false);
             } else if (data.status) {
-                console.log('Login successful!');
-                this.state.loggedIn = true;
+                this.props.updateLogin(true);
             } else {
-                this.state.loggedIn = false;
+                this.props.updateLogin(false);
                 if (data.foundUser) {
                     console.log('Incorrect password for user ' + username);
                 } else {
