@@ -63,6 +63,26 @@ export default class extends React.Component {
                     <input type='text' value={this.state.username} onChange={this.updateUsername} placeholder='username'/>
                     <input type='password' value={this.state.password} onChange={this.updatePassword} placeholder='password'/>
                     <button onClick={this.login}><span>Login</span></button>
+                    <style jsx>{`
+                        .loginDiv {
+                            background: #F53A33;
+                            padding: 20px;
+                            width: 200px;
+                        }
+                        button {
+                            background-color: #FF9130;
+                            color: white;
+                            padding: 15px 30px;
+                            margin: 5px;
+                            text-align: center;
+                            text-decoration: none;
+                            display: inline-block;
+                            font-size: 10px;
+                        }
+                        input {
+                            margin: 10px;
+                        }
+                    `}</style>
                 </div>
             </div>
         )
