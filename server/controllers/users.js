@@ -53,7 +53,7 @@ function getUserByName(name, callback) {
             callback({'status': true, 'user': user});
         } else {
             callback({'status': false,
-                      'message': 'User with name or ID ' + name + ' not found!'});
+                      'message': 'User with name ' + name + ' not found!'});
         }
     }); 
 }

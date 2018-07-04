@@ -3,80 +3,7 @@ const router = express.Router();
 
 const Group = require('../models/Group');
 const User = require('../models/User');
-
-var getGroupById = function(req, res, next) {
-    var id = req.params.ident;
-    Group.findById(id, function(err, group) {
-        if (err) {
-            // A name may have been passed, check getGroupsByName
-            next();
-        } else {
-            if (group) {
-                res.json({'status': true, 'group': group});
-            } else {
-                // A name may have been passed, check getGroupsByName
-                next();
-            }
-        }
-    });
-}
-
-var getGroupsByName = function(req, res) {
-    var name = req.params.ident;
-    Group.find({name: name}, function(err, groups) {
-        if (err) {
-            res.json({'status': false,
-                      'message': 'Database error finding groups with name ' + name + '!'});
-        } else if (groups.length > 0) {
-            res.json({'status': true, 'groups': groups});
-        } else {
-            res.json({'status': false,
-                      'message': 'Group with name or ID ' + name + ' not found!'});
-        }
-    });
-}
-
-var deleteGroupById = function(req, res, next) {
-    var id = req.params.ident;
-    Group.findByIdAndRemove(id, function(err, group) {
-        if (err) {
-            // A name may have been passed, try deleteGroupByName
-            next();
-        } else {
-            if (group) {
-                res.json({'status': true});
-            } else {
-                res.json({'status': false,
-                          'message': 'Group with ID ' + id + ' not found!'});
-            }
-        }
-    });
-}
-
-var deleteGroupByName = function(req, res) {
-    var name = req.params.ident;
-    Group.find({name: name}, function(err, groups) {
-        if (err) {
-            res.json({'status': false,
-                      'message': 'Database error deleting group with name ' + name + '!'});
-        } else if (groups.length == 0) {
-            res.json({'status': false,
-                      'message': 'Group with name ' + name + ' not found!'});
-        } else if (groups.length > 1) {
-            res.json({'status': false,
-                      'message': 'Multiple groups found with name ' + name + '. Must delete by ID.'});
-        } else {
-            var group = groups[0];
-            try {
-                group.remove();
-                res.json({'status': true});
-            } catch(err) {
-                res.json({'status': false,
-                          'message': 'Error deleting group ' + name + '!'});
-            }
-        }
-    });
-}
+const groupController = require('../controllers/groups');
 
 // List all groups
 router.get('/', function(req, res) {
@@ -92,7 +19,11 @@ router.get('/', function(req, res) {
 });
 
 // Get group by id
-router.get('/:ident', [getGroupById, getGroupsByName]);
+router.get('/:ident', function(req, res) {
+    groupController.getGroup(req.params.ident, function(getRes) {
+        res.json(getRes);
+    });
+});
 
 // Create new group
 router.post('/', function(req, res) {
@@ -111,7 +42,11 @@ router.post('/', function(req, res) {
 });
 
 // Delete group
-router.delete('/:ident', [deleteGroupById, deleteGroupByName]);
+router.delete('/:ident', function(req, res) {
+    groupController.deleteGroup(req.params.ident, function(deleteRes) {
+        res.json(deleteRes);
+    });
+});
 
 // Add user to group
 router.post('/:groupId/users/:userId', function (req, res, next) {
