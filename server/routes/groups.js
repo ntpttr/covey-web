@@ -4,6 +4,7 @@ const router = express.Router();
 const Group = require('../models/Group');
 const User = require('../models/User');
 const groupController = require('../controllers/groups');
+const userController = require('../controllers/users');
 
 // List all groups
 router.get('/', function(req, res) {
@@ -49,31 +50,25 @@ router.delete('/:ident', function(req, res) {
 });
 
 // Add user to group
-router.post('/:groupId/users/:userId', function (req, res, next) {
-    var groupId = req.params.groupId;
-    var userId = req.params.userId;
-    Group.findById(groupId, function (err, group) {
-        if (err) {
-            if (err.name === 'CastError') {
-                res.json({'status': false,
-                          'message': 'Invalid Group ID!'});
-            } else {
-                res.json({'status': false,
-                          'message':  err.message});
-            }
+router.post('/:groupIdent/users/:userIdent', function (req, res, next) {
+    var groupIdent = req.params.groupIdent;
+    var userIdent = req.params.userIdent;
+    groupController.getGroup(groupIdent, function(groupRes) {
+        if (!groupRes.status) {
+            res.json({'status': false, 'message': groupRes.message});
+            return;
+        } else if (groupRes.groups.length > 1) {
+            res.json({'status': false,
+                      'message': 'More than one group found with name ' + groupIdent + '. Use ID.'});
             return;
         }
-        User.findById(userId, function (err, user) {
-            if (err) {
-                if (err.name === 'CastError') {
-                    res.json({'status': false,
-                              'message': 'Invalid User ID!'});
-                } else {
-                    res.json({'status': false,
-                              'message': err.message});
-                }
+        group = groupRes.groups[0];
+        userController.getUser(userIdent, function(userRes) {
+            if (!userRes.status) {
+                res.json({'status': false, 'message': userRes.message});
                 return;
             }
+            user = userRes.user;
             try {
                 group.addUser(user._id);
                 user.addGroup(group._id);
@@ -87,34 +82,33 @@ router.post('/:groupId/users/:userId', function (req, res, next) {
 });
 
 // Remove user from group
-router.delete('/:groupId/users/:userId', function(req, res) {
-    var groupId = req.params.groupId;
-    var userId = req.params.userId;
-    Group.findById(groupId, function(err, group) {
-        if (err) {
-            if (err.name === 'CastError') {
-                res.json({'status': false,
-                          'message': 'Invalid Group ID.'});
-            } else {
-                res.json({'status': false,
-                          'message': err.message});
-            }
+router.delete('/:groupIdent/users/:userIdent', function(req, res) {
+    var groupIdent = req.params.groupIdent;
+    var userIdent = req.params.userIdent;
+    groupController.getGroup(groupIdent, function(groupRes) {
+        if (!groupRes.status) {
+            res.json({'status': false, 'message': groupRes.message});
+            return;
+        } else if (groupRes.groups.length > 1) {
+            res.json({'status': false,
+                      'message': 'More than one group found with name ' + groupIdent + '. Use ID.'});
             return;
         }
-        User.findById(userId, function(err, user) {
-            if (err) {
-                if (err.name === 'CastError') {
-                    res.json({'status': false,
-                              'message': 'Invalid User ID.'});
-                } else {
-                    res.json({'status': false,
-                              'message': err.message});
-                }
+        group = groupRes.groups[0];
+        userController.getUser(userIdent, function(userRes) {
+            if (!userRes.status) {
+                res.json({'status': false, 'message': userRes.message});
                 return;
             }
-            if (group) group.deleteUser(userId);
-            if (user) user.deleteGroup(groupId);
-            res.json({'status': true});
+            user = userRes.user;
+            try {
+                group.deleteUser(user._id);
+                user.deleteGroup(group._id);
+                res.json({'status': true});
+            } catch(err) {
+                res.json({'status': false,
+                          'message': 'Error deleting user from group.'});
+            }
         });
     });
 });

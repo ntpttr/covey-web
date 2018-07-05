@@ -17,7 +17,10 @@ groupSchema.methods.addUser = function(userId) {
 }
 
 groupSchema.methods.deleteUser = function(userId) {
-    this.users = this.users.filter(function(id) { return id != userId; });
+    var index = this.users.indexOf(userId);
+    if (index >= 0) {
+        this.users.splice(index, 1);
+    }
     return this.save();
 }
 

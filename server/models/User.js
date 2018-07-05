@@ -48,7 +48,10 @@ userSchema.methods.addGroup = function(groupId) {
 }
 
 userSchema.methods.deleteGroup = function(groupId) {
-    this.groups = this.groups.filter(function(id) { return id != groupId; });
+    var index = this.groups.indexOf(groupId);
+    if (index >= 0) {
+        this.groups.splice(index, 1);
+    }
     return this.save();
 }
 

@@ -17,7 +17,7 @@ function getGroupById(id, callback) {
             callback({'status': false,
                       'message': 'Database error finding group with id ' + id + '!'});
         } else if (group) {
-            callback({'status': true, 'group': group});
+            callback({'status': true, 'groups': [group]});
         } else {
             callback({'status': false,
                       'message': 'Group with ID ' + id + ' not found!'});
