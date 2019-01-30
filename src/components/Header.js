@@ -1,41 +1,60 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
+
+const LoggedOutView = (props) => {
+  if (!props.currentUser) {
+    return (
+      <ul>
+        <li>
+          <Link to="/">
+            Home
+          </Link>
+        </li>
+        <li>
+          <Link to="/login">
+            Sign in
+          </Link>
+        </li>
+        <li>
+          <Link to="/register">
+            Sign up
+          </Link>
+        </li>
+      </ul>
+    );
+  }
+  return null;
+};
+
+const LoggedInView = props => {
+  if (props.currentUser) {
+    return (
+      <ul>
+        <li>
+          <Link to="/">
+            Home
+          </Link>
+        </li>
+      </ul>
+    );
+  }
+
+  return null;
+};
 
 class Header extends React.Component {
   render() {
-    return(
-      <div className="header clearfix">
-        <div className="logo">
-          ☻
+    return (
+      <nav>
+        <div>
+          <Link to="/">
+            {this.props.appName.toLowerCase()}
+          </Link>
+          <LoggedOutView currentUser={this.props.currentUser} />
+          <LoggedInView currentUser={this.props.currentUser} />
         </div>
-        <div className="navigation">
-          <h3>Home</h3>
-          <h3>About</h3>
-          <h3>Groups</h3>
-        </div>
-        <style jsx>{`
-          .header {
-            background: #3B0030;
-            height: 70px;
-          }
-          .logo {
-            float: left;
-            font-size: 36px;
-            color: #FEDD55;
-            padding: 5px;
-            margin-left: 10px;
-          }
-          .navigation {
-            float: right;
-            margin-top: 20px;
-            align: center;
-            width: 150px;
-          }
-          h3 {
-            padding: 5px;
-          }
-        `}</style>
-      </div>
-    )
+      </nav>
+    );
   }
 }
 

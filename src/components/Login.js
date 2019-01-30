@@ -1,89 +1,82 @@
+import { Link } from 'react-router-dom';
 import React from 'react';
+import agent from '../agent';
+import { connect } from 'react-redux';
+import {
+  UPDATE_FIELD_AUTH,
+  LOGIN,
+  LOGIN_PAGE_UNLOADED
+} from '../constants/actionTypes';
 
-export default class extends React.Component {
+const mapStateToProps = (state) => ({ ...state.auth });
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            username: '',
-            password: '',
-        }
+const mapDispatchToProps = (dispatch) => ({
+  onChangeUsername: value =>
+    dispatch({ type: UPDATE_FIELD_AUTH, key: 'username', value }),
+  onChangePassword: value =>
+    dispatch({ type: UPDATE_FIELD_AUTH, key: 'password', value }),
+  onSubmit: (username, password) =>
+    dispatch({ type: LOGIN, payload: agent.Auth.login(username, password) }),
+  onUnload: () =>
+    dispatch({ type: LOGIN_PAGE_UNLOADED })
+});
 
-        this.updateUsername = this.updateUsername.bind(this);
-        this.updatePassword = this.updatePassword.bind(this);
-        this.login = this.login.bind(this);
-    }
+class Login extends React.Component {
+  constructor() {
+    super();
+    this.changeUsername = ev => this.props.onChangeUsername(ev.target.value);
+    this.changePassword = ev => this.props.onChangePassword(ev.target.value);
+    this.submitForm = (username, password) => ev => {
+      ev.preventDefault();
+      this.props.onSubmit(username, password);
+    };
+  }
 
-    updateUsername(event) {
-        this.setState({username: event.target.value});
-    }
+  componentWillUnmount() {
+    this.props.onUnload();
+  }
 
-    updatePassword(event) {
-        this.setState({password: event.target.value});
-    }
+  render() {
+    const username = this.props.username;
+    const password = this.props.password;
+    return (
+      <div>
+        <p>
+          <Link to="/register">
+            New User?
+          </Link>
+        </p>
 
-    login() {
-        var username = this.state.username;
-        var password = this.state.password;
-        var data = {
-            'name': username,
-            'password': password
-        }
+        <form onSubmit={this.submitForm(username, password)}>
+          <fieldset>
 
-        fetch('/users/login', {
-            method: 'post',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }).then((res) => {
-            if (res.status == 500) {
-                console.log('Error: ' + res.body.message);
-                this.props.updateLogin(false);
-            } else if (res.status == 200) {
-                this.props.updateLogin(true);
-            } else {
-                this.props.updateLogin(false);
-                if (res.status == 401) {
-                    console.log('Incorrect password for user ' + username);
-                } else {
-                    console.log('User ' + username + ' not found!');
-                }
-            }
-        });
-    }
+            <fieldset>
+              <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={this.changeUsername} />
+            </fieldset>
 
-    render() {
-        return (
-            <div>
-                <div className='loginDiv'>
-                    <input type='text' value={this.state.username} onChange={this.updateUsername} placeholder='username'/>
-                    <input type='password' value={this.state.password} onChange={this.updatePassword} placeholder='password'/>
-                    <button onClick={this.login}><span>Login</span></button>
-                    <style jsx>{`
-                        .loginDiv {
-                            background: #F53A33;
-                            padding: 20px;
-                            width: 200px;
-                        }
-                        button {
-                            background-color: #FF9130;
-                            color: white;
-                            padding: 15px 30px;
-                            margin: 5px;
-                            text-align: center;
-                            text-decoration: none;
-                            display: inline-block;
-                            font-size: 10px;
-                        }
-                        input {
-                            margin: 10px;
-                        }
-                    `}</style>
-                </div>
-            </div>
-        )
-    }
+            <fieldset>
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={this.changePassword} />
+            </fieldset>
 
+            <button
+              type="submit"
+              disabled={this.props.inProgress}>
+              Sign in
+            </button>
+
+          </fieldset>
+        </form>
+      </div>
+    );
+  }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

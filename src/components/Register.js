@@ -1,69 +1,85 @@
+import { Link } from 'react-router-dom';
 import React from 'react';
 import agent from '../agent';
+import { connect } from 'react-redux';
+import {
+  UPDATE_FIELD_AUTH,
+  REGISTER,
+  REGISTER_PAGE_UNLOADED
+} from '../constants/actionTypes';
+
+const mapStateToProps = state => ({ ...state.auth });
+
+const mapDispatchToProps = dispatch => ({
+  onChangeUsername: value =>
+    dispatch({ type: UPDATE_FIELD_AUTH, key: 'username', value }),
+  onChangePassword: value =>
+    dispatch({ type: UPDATE_FIELD_AUTH, key: 'password', value }),
+  onSubmit: (username, password) => {
+    const payload = agent.Auth.register(username, password);
+    dispatch({ type: REGISTER, payload })
+  },
+  onUnload: () =>
+    dispatch({ type: REGISTER_PAGE_UNLOADED })
+});
 
 class Register extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      password: '',
+  constructor() {
+    super();
+    this.changeUsername = ev => this.props.onChangeUsername(ev.target.value);
+    this.changePassword = ev => this.props.onChangePassword(ev.target.value);
+    this.submitForm = (username, password) => ev => {
+      ev.preventDefault();
+      this.props.onSubmit(username, password);
     }
-
-    this.updateUsername = this.updateUsername.bind(this);
-    this.updatePassword = this.updatePassword.bind(this);
-    this.registerUser = this.registerUser.bind(this);
   }
 
-  updateUsername(event) {
-    this.setState({username: event.target.value});
-  }
-
-  updatePassword(event) {
-    this.setState({password: event.target.value});
-  }
-
-  registerUser() {
-    var username = this.state.username;
-    var password = this.state.password;
-
-    if (username.length === 0 || password.length === 0) {
-      // Can't submit a request with empty values
-      return;
-    }
-
-    var user = {
-      'name': username,
-      'password': password
-    }
-
-    agent.User.register(user);
-  
-    /*
-    fetch('/users', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    }).then((res) => {
-      if (res != 201) {
-        console.log(res.body.message);
-      } else {
-        this.props.updateLogin(true);
-      }
-    });
-    */
+  componentWillUnmount() {
+    this.props.onUnload();
   }
 
   render() {
+    const username = this.props.username;
+    const password = this.props.password;
+
     return (
-      <div className='registerDiv'>
-        <input type='text' value={this.state.username} onChange={this.updateUsername} placeholder='username'/>
-        <input type='password' value={this.state.password} onChange={this.updatePassword} placeholder='password'/>
-        <button onClick={this.registerUser}><span>Register</span></button>
+      <div className="auth-page">
+        <p>
+          <Link to="/login">
+            Have an account?
+          </Link>
+        </p>
+
+        <form onSubmit={this.submitForm(username, password)}>
+          <fieldset>
+
+            <fieldset>
+              <input
+                type="text"
+                placeholder="Username"
+                value={this.props.username}
+                onChange={this.changeUsername} />
+            </fieldset>
+
+            <fieldset>
+              <input
+                type="password"
+                placeholder="Password"
+                value={this.props.password}
+                onChange={this.changePassword} />
+            </fieldset>
+
+            <button
+              type="submit"
+              disabled={this.props.inProgress}>
+              Sign up
+            </button>
+
+          </fieldset>
+        </form>
       </div>
     );
   }
 }
 
-export default Register;
+export default connect(mapStateToProps, mapDispatchToProps)(Register);

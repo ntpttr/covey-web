@@ -1,125 +1,71 @@
+import agent from '../agent';
 import Header from './Header';
+import React from 'react';
+import {connect} from 'react-redux';
+import {APP_LOAD, REDIRECT} from '../constants/actionTypes';
+import {Route, Switch} from 'react-router-dom';
+import Home from '../components/Home';
 import Login from '../components/Login';
 import Register from '../components/Register';
-import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import {store} from '../store';
+import {push} from 'react-router-redux';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-        loggedIn: false,
-        registerDisplay: false,
-    }
-
-    this.updateLogin = this.updateLogin.bind(this);
-    this.displayRegister = this.displayRegister.bind(this);
-    this.renderLogin = this.renderLogin.bind(this);
-    this.renderHome = this.renderHome.bind(this);
+const mapStateToProps = (state) => {
+  return {
+    appLoaded: state.common.appLoaded,
+    appName: state.common.appName,
+    currentUser: state.common.currentUser,
+    redirectTo: state.common.redirectTo
   }
+};
 
-  updateLogin(loggedIn) {
-    this.setState({
-      loggedIn: loggedIn,
-    });
-    }
+const mapDispatchToProps = (dispatch) => ({
+  onLoad: (payload, token) =>
+    dispatch({type: APP_LOAD, payload, token, skipTracking: true}),
+  onRedirect: () =>
+    dispatch({type: REDIRECT})
+});
 
-  displayRegister(display) {
-    this.setState({
-      registerDisplay: display,
-    });
-  }
-
-  renderLogin() {
-    if (!this.state.registerDisplay) {
-      return (
-        <div className="loginBox">
-          <Login updateLogin={this.updateLogin}/>
-          <button type='button' onClick={() => this.displayRegister(true)}>
-            New User?
-          </button>
-          <style jsx>{`
-            .loginBox {
-              float: right;
-              width: 200px;
-              padding: 20px;
-              margin-right: 20px;
-            }
-            button {
-              background-color: #FF9130;
-              color: white;
-              padding: 15px 30px;
-              margin: 20px;
-              text-align: center;
-              text-decoration: none;
-              display: inline-block;
-              font-size: 10px;
-            }
-        `}</style>
-            </div>
-      )
-    } else {
-      return (
-        <div>
-          <Register updateLogin={this.updateLogin}/>
-          <button type='button' onClick={() => this.displayRegister(false)}>
-            Back
-          </button>
-        </div>
-      )
+class App extends React.Component {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.redirectTo) {
+      store.dispatch(push(nextProps.redirectTo));
+      this.props.onRedirect();
     }
   }
 
-  renderHome() {
-    return (
-      <div>
-        <h3>LOGGED IN</h3>
-        <style jsx>{`
-          h3 {
-            font-size: 24px;
-          }
-      `}</style>
-      </div>
-    )
+  componentWillMount() {
+    const token = window.localStorage.getItem('jwt');
+    if (token) {
+      agent.setToken(token);
+    }
+
+    this.props.onLoad(token ? agent.Auth.current() : null, token);
   }
 
   render() {
-    let loginBox;
-    if (this.state.loggedIn) {
-      loginBox = this.renderHome();
-    } else {
-      loginBox = this.renderLogin();
+    if (this.props.appLoaded) {
+      return (
+        <div>
+          <Header
+            appName={this.props.appName}
+            currentUser={this.props.currentUser} />
+            <Switch>
+            <Route exact path="/" component={Home}/>
+            <Route path="/login" component={Login} />
+            <Route path="/register" component={Register} />
+            </Switch>
+        </div>
+      );
     }
     return (
       <div>
-        <Header />
-        {loginBox}
-        {/* Global Styles */}
-        <style jsx global>{`
-          body {
-            margin: 0px;
-            box-sizing: border-box;
-            background: #128C87;
-          }
-          h3 {
-            font-family: sans-serif;
-            font-size: 11px;
-            font-style: bold;
-            color: #FEDD55;
-            display: inline;
-          }
-          p {
-            color: #FEDD55;
-          }
-          .clearfix::after {
-            content: "";
-            clear: both;
-            display: table;
-          }
-        `}</style>
+        <Header
+          appName={this.props.appName}
+          currentUser={this.props.currentUser} />
       </div>
-    )
+    );
   }
 }
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
