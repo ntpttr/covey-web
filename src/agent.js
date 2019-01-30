@@ -5,7 +5,6 @@ const superagent = superagentPromise(_superagent, global.Promise);
 
 const API_ROOT = 'https://localhost:3000';
 
-const encode = encodeURIComponent;
 const responseBody = res => res.body;
 
 let token = null;
