@@ -48,7 +48,7 @@ class Header extends React.Component {
       <nav>
         <div>
           <Link to="/">
-            {this.props.appName.toLowerCase()}
+            Covey
           </Link>
           <LoggedOutView currentUser={this.props.currentUser} />
           <LoggedInView currentUser={this.props.currentUser} />
@@ -58,4 +58,4 @@ class Header extends React.Component {
   }
 }
 
-export default Header;
+export { Header };

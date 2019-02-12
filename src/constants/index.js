@@ -1,1 +1,1 @@
-export * from './authConstants';
+export * from './user.constants';

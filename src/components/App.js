@@ -1,71 +1,32 @@
-import agent from '../agent';
-import Header from './Header';
 import React from 'react';
-import {connect} from 'react-redux';
-import {APP_LOAD, REDIRECT} from '../constants/actionTypes';
-import {Route, Switch} from 'react-router-dom';
-import Home from '../components/Home';
-import Login from '../components/Login';
-import Register from '../components/Register';
-import {store} from '../store';
-import {push} from 'react-router-redux';
+import { connect } from 'react-redux';
+import { Route, Router } from 'react-router-dom';
 
-const mapStateToProps = (state) => {
-  return {
-    appLoaded: state.common.appLoaded,
-    appName: state.common.appName,
-    currentUser: state.common.currentUser,
-    redirectTo: state.common.redirectTo
-  }
-};
+import { Header, Home, Login, Register, PrivateRoute } from '../components';
+import { history } from '../helpers';
 
-const mapDispatchToProps = (dispatch) => ({
-  onLoad: (payload, token) =>
-    dispatch({type: APP_LOAD, payload, token, skipTracking: true}),
-  onRedirect: () =>
-    dispatch({type: REDIRECT})
-});
+function mapStateToProps(state) {
+  return {};
+}
 
 class App extends React.Component {
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.redirectTo) {
-      store.dispatch(push(nextProps.redirectTo));
-      this.props.onRedirect();
-    }
-  }
-
-  componentWillMount() {
-    const token = window.localStorage.getItem('jwt');
-    if (token) {
-      agent.setToken(token);
-    }
-
-    this.props.onLoad(token ? agent.Auth.current() : null, token);
-  }
-
   render() {
-    if (this.props.appLoaded) {
-      return (
-        <div>
-          <Header
-            appName={this.props.appName}
-            currentUser={this.props.currentUser} />
-            <Switch>
-              <Route exact path="/" component={Home}/>
-              <Route path="/login" component={Login} />
-              <Route path="/register" component={Register} />
-            </Switch>
-        </div>
-      );
-    }
     return (
       <div>
-        <Header
-          appName={this.props.appName}
-          currentUser={this.props.currentUser} />
+        <Router history={history}>
+          <div>
+            <Header
+              appName={this.props.appName}
+              currentUser={this.props.currentUser} />
+            <PrivateRoute exact path="/" component={Home}/>
+            <Route path="/login" component={Login} />
+            <Route path="/register" component={Register} />
+          </div>
+        </Router>
       </div>
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+const connectedApp = connect(mapStateToProps)(App);
+export { connectedApp as App }; 

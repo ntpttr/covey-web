@@ -1,4 +1,4 @@
-export const authConstants = {
+export const userConstants = {
     LOGIN_REQUEST: 'LOGIN_REQUEST',
     LOGIN_SUCCESS: 'LOGIN_SUCCESS',
     LOGIN_FAILURE: 'LOGIN_FAILURE',
@@ -6,5 +6,4 @@ export const authConstants = {
     REGISTER_REQUEST: 'REGISTER_REQUEST',
     REGISTER_FAILURE: 'REGISTER_FAILURE',
     REGISTER_SUCCESS: 'REGISTER_SUCCESS',
-    UPDATE_FIELD_AUTH: 'UPDATE_FIELD_AUTH',
 };

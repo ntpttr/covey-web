@@ -1,77 +1,82 @@
-import { Link } from 'react-router-dom';
 import React from 'react';
-import agent from '../agent';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import {
-  UPDATE_FIELD_AUTH,
-  REGISTER,
-  REGISTER_PAGE_UNLOADED
-} from '../constants/actionTypes';
 
-const mapStateToProps = state => ({ ...state.auth });
+import { userActions } from '../actions';
 
-const mapDispatchToProps = dispatch => ({
-  onChangeUsername: value =>
-    dispatch({ type: UPDATE_FIELD_AUTH, key: 'username', value }),
-  onChangePassword: value =>
-    dispatch({ type: UPDATE_FIELD_AUTH, key: 'password', value }),
-  onSubmit: (username, password) => {
-    const payload = agent.Auth.register(username, password);
-    dispatch({ type: REGISTER, payload })
-  },
-  onUnload: () =>
-    dispatch({ type: REGISTER_PAGE_UNLOADED })
-});
+function mapStateToProps(state) {
+  const loggingIn = state.auth.loggingIn;
+  return {
+      loggingIn
+  };
+}
 
 class Register extends React.Component {
-  constructor() {
-    super();
-    this.changeUsername = ev => this.props.onChangeUsername(ev.target.value);
-    this.changePassword = ev => this.props.onChangePassword(ev.target.value);
-    this.submitForm = (username, password) => ev => {
-      ev.preventDefault();
-      this.props.onSubmit(username, password);
+  constructor(props) {
+    super(props);
+
+    // reset login status
+    this.props.dispatch(userActions.logout());
+
+    this.state = {
+        username: '',
+        password: '',
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(e) {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+
+    const { username, password } = this.state;
+    const { dispatch } = this.props;
+    if (username && password) {
+        dispatch(userActions.register(username, password));
     }
   }
 
-  componentWillUnmount() {
-    this.props.onUnload();
-  }
-
   render() {
-    const username = this.props.username;
-    const password = this.props.password;
-
+    const { loggingIn } = this.props;
+    const { username, password } = this.state;
     return (
-      <div className="auth-page">
+      <div>
         <p>
           <Link to="/login">
-            Have an account?
+            Have an Account?
           </Link>
         </p>
 
-        <form onSubmit={this.submitForm(username, password)}>
+        <form onSubmit={this.handleSubmit}>
           <fieldset>
 
             <fieldset>
               <input
                 type="text"
                 placeholder="Username"
-                value={this.props.username}
-                onChange={this.changeUsername} />
+                name="username"
+                value={username}
+                onChange={this.handleChange} />
             </fieldset>
 
             <fieldset>
               <input
                 type="password"
                 placeholder="Password"
-                value={this.props.password}
-                onChange={this.changePassword} />
+                name="password"
+                value={password}
+                onChange={this.handleChange} />
             </fieldset>
 
             <button
               type="submit"
-              disabled={this.props.inProgress}>
+              disabled={loggingIn}>
               Sign up
             </button>
 
@@ -82,4 +87,5 @@ class Register extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+const connectedRegister = connect(mapStateToProps)(Register);
+export { connectedRegister as Register }; 

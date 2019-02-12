@@ -1,44 +1,50 @@
-import { Link } from 'react-router-dom';
 import React from 'react';
-import agent from '../agent';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import {
-  UPDATE_FIELD_AUTH,
-  LOGIN,
-  LOGIN_PAGE_UNLOADED
-} from '../constants/actionTypes';
 
-const mapStateToProps = (state) => ({ ...state.auth });
+import { userActions } from '../actions';
 
-const mapDispatchToProps = (dispatch) => ({
-  onChangeUsername: value =>
-    dispatch({ type: UPDATE_FIELD_AUTH, key: 'username', value }),
-  onChangePassword: value =>
-    dispatch({ type: UPDATE_FIELD_AUTH, key: 'password', value }),
-  onSubmit: (username, password) =>
-    dispatch({ type: LOGIN, payload: agent.Auth.login(username, password) }),
-  onUnload: () =>
-    dispatch({ type: LOGIN_PAGE_UNLOADED })
-});
+function mapStateToProps(state) {
+  const loggingIn = state.auth.loggingIn;
+  return {
+      loggingIn
+  };
+}
 
 class Login extends React.Component {
-  constructor() {
-    super();
-    this.changeUsername = ev => this.props.onChangeUsername(ev.target.value);
-    this.changePassword = ev => this.props.onChangePassword(ev.target.value);
-    this.submitForm = (username, password) => ev => {
-      ev.preventDefault();
-      this.props.onSubmit(username, password);
+  constructor(props) {
+    super(props);
+
+    // reset login status
+    this.props.dispatch(userActions.logout());
+
+    this.state = {
+        username: '',
+        password: '',
     };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentWillUnmount() {
-    this.props.onUnload();
+  handleChange(e) {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+
+    const { username, password } = this.state;
+    const { dispatch } = this.props;
+    if (username && password) {
+        dispatch(userActions.login(username, password));
+    }
   }
 
   render() {
-    const username = this.props.username;
-    const password = this.props.password;
+    const { loggingIn } = this.props;
+    const { username, password } = this.state;
     return (
       <div>
         <p>
@@ -47,28 +53,30 @@ class Login extends React.Component {
           </Link>
         </p>
 
-        <form onSubmit={this.submitForm(username, password)}>
+        <form onSubmit={this.handleSubmit}>
           <fieldset>
 
             <fieldset>
               <input
                 type="text"
                 placeholder="Username"
+                name="username"
                 value={username}
-                onChange={this.changeUsername} />
+                onChange={this.handleChange} />
             </fieldset>
 
             <fieldset>
               <input
                 type="password"
                 placeholder="Password"
+                name="password"
                 value={password}
-                onChange={this.changePassword} />
+                onChange={this.handleChange} />
             </fieldset>
 
             <button
               type="submit"
-              disabled={this.props.inProgress}>
+              disabled={loggingIn}>
               Sign in
             </button>
 
@@ -79,4 +87,5 @@ class Login extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+const connectedLogin = connect(mapStateToProps)(Login);
+export { connectedLogin as Login }; 
