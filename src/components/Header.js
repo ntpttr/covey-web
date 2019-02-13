@@ -2,7 +2,8 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 
 const LoggedOutView = (props) => {
-  if (!props.currentUser) {
+  // Only display if there is no logged in user
+  if (!props.user) {
     return (
       <ul>
         <li>
@@ -27,7 +28,8 @@ const LoggedOutView = (props) => {
 };
 
 const LoggedInView = props => {
-  if (props.currentUser) {
+  // Only display if there is a logged in user
+  if (props.user) {
     return (
       <ul>
         <li>
@@ -48,10 +50,10 @@ class Header extends React.Component {
       <nav>
         <div>
           <Link to="/">
-            Covey
+            {this.props.appName}
           </Link>
-          <LoggedOutView currentUser={this.props.currentUser} />
-          <LoggedInView currentUser={this.props.currentUser} />
+          <LoggedOutView user={this.props.user} />
+          <LoggedInView user={this.props.user} />
         </div>
       </nav>
     );

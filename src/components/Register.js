@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import { userActions } from '../actions';
 
 function mapStateToProps(state) {
-  const loggingIn = state.auth.loggingIn;
+  const { auth } = state;
+  const { loggingIn } = auth;
   return {
       loggingIn
   };

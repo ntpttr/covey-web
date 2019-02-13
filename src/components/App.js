@@ -6,7 +6,12 @@ import { Header, Home, Login, Register, PrivateRoute } from '../components';
 import { history } from '../helpers';
 
 function mapStateToProps(state) {
-  return {};
+  const user = state.auth.user;
+  const appName = state.common.appName;
+  return {
+    appName,
+    user
+  };
 }
 
 class App extends React.Component {
@@ -17,7 +22,7 @@ class App extends React.Component {
           <div>
             <Header
               appName={this.props.appName}
-              currentUser={this.props.currentUser} />
+              user={this.props.user} />
             <PrivateRoute exact path="/" component={Home}/>
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
