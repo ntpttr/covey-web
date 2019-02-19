@@ -2,22 +2,35 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import { userActions } from '../actions';
+
 function mapStateToProps(state) {
-  const { auth } = state;
-  const { user } = auth;
+  const { user } = state;
+  const { currentUser } = user;
   return {
-    user
+    currentUser
   };
 };
 
 class Home extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleLogout = this.handleLogout.bind(this);
+  }
+
+  handleLogout() {
+    const { dispatch } = this.props;
+    dispatch(userActions.logout());
+  }
+
   render() {
-    const { user } = this.props;
+    const { currentUser } = this.props;
     return (
       <div>
-        <h1>You logged in with {user.username}!</h1>
+        <h1>You logged in with {currentUser.username}!</h1>
         <p>
-          <Link to='/login'>Logout</Link>
+          <Link to='/login' onClick={this.handleLogout}>Logout</Link>
         </p>
       </div>
     );

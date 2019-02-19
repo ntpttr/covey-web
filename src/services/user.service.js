@@ -1,6 +1,9 @@
+import { authHeader } from '../helpers';
+
 export const userService = {
     login,
     register,
+    update,
     logout
 };
 
@@ -15,11 +18,11 @@ function login(username, password) {
 
     return fetch(`${url}/user/login`, requestOptions)
         .then(handleResponse)
-        .then(user => {
+        .then(response => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('currentUser', JSON.stringify(response.user));
 
-            return user;
+            return response.user;
         });
 }
 
@@ -32,17 +35,31 @@ function register(username, password) {
 
     return fetch(`${url}/user`, requestOptions)
     .then(handleResponse)
-    .then(user => {
+    .then(response => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
-        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('currentUser', JSON.stringify(response.user));
 
-        return user;
+        return response.user;
+    });
+}
+
+function update(properties) {
+    const requestOptions = {
+        method: 'PUT',
+        headers: Object.assign({'Content-Type': 'application/json'}, authHeader()),
+        body: JSON.stringify(properties),
+    }
+
+    return fetch(`${url}/user`, requestOptions)
+    .then(handleResponse)
+    .then(response => {
+        return response.user;
     });
 }
 
 function logout() {
     // remove user from local storage to log user out
-    localStorage.removeItem('user');
+    localStorage.removeItem('currentUser');
 }
 
 function handleResponse(response) {

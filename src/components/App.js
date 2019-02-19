@@ -2,15 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Route, Router } from 'react-router-dom';
 
-import { Header, Home, Login, Register, PrivateRoute } from '../components';
+import { Account, Header, Home, Login, Register, PrivateRoute } from '../components';
 import { history } from '../helpers';
 
 function mapStateToProps(state) {
-  const user = state.auth.user;
-  const appName = state.common.appName;
+  const { user, common } = state;
+  const { currentUser } = user;
+  const { appName } = common;
   return {
     appName,
-    user
+    currentUser
   };
 }
 
@@ -22,8 +23,9 @@ class App extends React.Component {
           <div>
             <Header
               appName={this.props.appName}
-              user={this.props.user} />
-            <PrivateRoute exact path="/" component={Home}/>
+              currentUser={this.props.currentUser} />
+            <PrivateRoute exact path="/" component={Home} />
+            <PrivateRoute path="/account" component={Account} />
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
           </div>

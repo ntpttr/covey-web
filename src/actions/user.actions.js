@@ -6,48 +6,61 @@ export const userActions = {
   login,
   logout,
   register,
+  update,
 };
 
 function login(username, password) {
   return dispatch => {
-    dispatch(request({ username }));
-
     userService.login(username, password)
       .then(
-        response => {
-          dispatch(success(response.user));
+        user => {
+          dispatch(success(user));
           history.push('/');
         },
         error => {
-          dispatch(failure(error));
+          console.log('ERROR', error);
         }
       );
   }
 
-  function request(user) { return { type: userConstants.LOGIN_REQUEST, user } };
-  function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } };
-  function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } };
+  function success(user) { return { type: userConstants.LOGIN, user } };
 }
 
 function register(username, password) {
   return dispatch => {
-    dispatch(request({ username }));
-
     userService.register(username, password)
       .then(
-        response => {
-          dispatch(success(response.user));
+        user => {
+          dispatch(success(user));
           history.push('/');
         },
         error => {
-          dispatch(failure(error));
+          console.log('ERROR', error);
         }
       );
   }
 
-  function request(user) { return { type: userConstants.REGISTER_REQUEST, user } };
-  function success(user) { return { type: userConstants.REGISTER_SUCCESS, user } };
-  function failure(error) { return { type: userConstants.REGISTER_FAILURE, error } };
+  function success(user) { return { type: userConstants.REGISTER, user } };
+}
+
+function update(field, value) {
+  return dispatch => {
+    let property = {};
+    property[field] = value;
+
+    userService.update(property)
+      .then(
+        user => {
+          dispatch(success(user));
+          history.push('/');
+        },
+        error => {
+          console.log('ERROR', error);
+        }
+      );
+  }
+
+  function success(user) { return { type: userConstants.UPDATE, user } };
 }
 
 function logout() {

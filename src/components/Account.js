@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { userActions } from '../actions';
@@ -8,7 +7,7 @@ const mapStateToProps = (state) => ({
   ...state.user
 });
 
-class Register extends React.Component {
+class Account extends React.Component {
   constructor(props) {
     super(props);
 
@@ -19,7 +18,8 @@ class Register extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubmitUsername = this.handleSubmitUsername.bind(this);
+    this.handleSubmitPassword = this.handleSubmitPassword.bind(this);
   }
 
   handleChange(e) {
@@ -27,33 +27,31 @@ class Register extends React.Component {
     this.setState({ [name]: value });
   }
 
-  handleSubmit(e) {
+  handleSubmitUsername(e) {
     e.preventDefault();
 
-    const { username, password, passwordConfirm } = this.state;
+    const { username } = this.state;
     const { dispatch } = this.props;
-    if (username && password && passwordConfirm) {
-        if (password !== passwordConfirm) {
-          // TODO: Update the page somewhere to tell the user that passwords don't match.
-          return;
-        } else {
-          dispatch(userActions.register(username, password));
-        }
+    if (username) {
+      dispatch(userActions.update('username', username));
+    }
+  }
+
+  handleSubmitPassword(e) {
+    e.preventDefault();
+
+    const { password, passwordConfirm } = this.state;
+    const { dispatch } = this.props;
+    if (password && passwordConfirm) {
+      dispatch(userActions.update('password', password));
     }
   }
 
   render() {
-    const { loggingIn } = this.props;
     const { username, password, passwordConfirm } = this.state;
     return (
       <div>
-        <p>
-          <Link to="/login">
-            Have an Account?
-          </Link>
-        </p>
-
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleSubmitUsername}>
           <fieldset>
 
             <fieldset>
@@ -64,6 +62,17 @@ class Register extends React.Component {
                 value={username}
                 onChange={this.handleChange} />
             </fieldset>
+
+            <button
+              type="submit">
+              Update Username
+            </button>
+
+          </fieldset>
+        </form>
+
+        <form onSubmit={this.handleSubmitPassword}>
+          <fieldset>
 
             <fieldset>
               <input
@@ -84,9 +93,8 @@ class Register extends React.Component {
             </fieldset>
 
             <button
-              type="submit"
-              disabled={loggingIn}>
-              Sign up
+              type="submit">
+              Update Password
             </button>
 
           </fieldset>
@@ -96,5 +104,5 @@ class Register extends React.Component {
   }
 }
 
-const connectedRegister = connect(mapStateToProps)(Register);
-export { connectedRegister as Register }; 
+const connectedAccount = connect(mapStateToProps)(Account);
+export { connectedAccount as Account }; 
