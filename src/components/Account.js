@@ -1,11 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
-import { userActions } from '../actions';
-
-const mapStateToProps = (state) => ({
-  ...state.user
-});
+import { userService } from '../services';
 
 class Account extends React.Component {
   constructor(props) {
@@ -15,6 +10,7 @@ class Account extends React.Component {
         username: '',
         password: '',
         passwordConfirm: '',
+        isLoading: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -27,23 +23,29 @@ class Account extends React.Component {
     this.setState({ [name]: value });
   }
 
-  handleSubmitUsername(e) {
-    e.preventDefault();
+  handleSubmitUsername = async event => {
+    event.preventDefault();
 
-    const { username } = this.state;
-    const { dispatch } = this.props;
-    if (username) {
-      dispatch(userActions.update('username', username));
+    try {
+      this.state.isLoading = true;
+      const user = await userService.update('username', this.state.username);
+      this.props.updateCurrentUser(user);
+    } catch (e) {
+      alert(e.message);
+      this.state.isLoading = false;
     }
   }
 
-  handleSubmitPassword(e) {
-    e.preventDefault();
+  handleSubmitPassword = async event => {
+    event.preventDefault();
 
-    const { password, passwordConfirm } = this.state;
-    const { dispatch } = this.props;
-    if (password && passwordConfirm) {
-      dispatch(userActions.update('password', password));
+    try {
+      this.state.isLoading = true;
+      const user = await userService.update('password', this.state.password);
+      this.props.updateCurrentUser(user);
+    } catch (e) {
+      alert(e.message);
+      this.state.isLoading = false;
     }
   }
 
@@ -104,5 +106,4 @@ class Account extends React.Component {
   }
 }
 
-const connectedAccount = connect(mapStateToProps)(Account);
-export { connectedAccount as Account }; 
+export { Account }; 

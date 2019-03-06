@@ -1,12 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
 
-import { userActions } from '../actions';
-
-const mapStateToProps = (state) => ({
-  ...state.user
-});
+import { userService } from '../services';
+import { history } from '../helpers';
 
 class Login extends React.Component {
   constructor(props) {
@@ -15,24 +11,34 @@ class Login extends React.Component {
     this.state = {
         username: '',
         password: '',
+        loggingIn: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(e) {
-    const { name, value } = e.target;
+  handleChange(event) {
+    const { name, value } = event.target;
     this.setState({ [name]: value });
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit = async event => {
+    event.preventDefault();
 
-    const { username, password } = this.state;
-    const { dispatch } = this.props;
-    if (username && password) {
-      dispatch(userActions.login(username, password));
+    if (!this.state.username || !this.state.password) {
+      alert('Must fill out username and password!');
+      return;
+    }
+
+    try {
+      this.state.loggingIn = true;
+      const user = await userService.login(this.state.username, this.state.password);
+      this.props.updateCurrentUser(user);
+      history.push('/');
+    } catch (e) {
+      alert(e.message);
+      this.state.loggingIn = false;
     }
   }
 
@@ -67,7 +73,9 @@ class Login extends React.Component {
                 onChange={this.handleChange} />
             </fieldset>
 
-            <button type="submit">
+            <button
+              type="submit"
+              disabled={this.state.loggingIn}>
               Sign in
             </button>
 
@@ -78,5 +86,4 @@ class Login extends React.Component {
   }
 }
 
-const connectedLogin = connect(mapStateToProps)(Login);
-export { connectedLogin as Login };
+export { Login };

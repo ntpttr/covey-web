@@ -1,12 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
 
-import { userActions } from '../actions';
-
-const mapStateToProps = (state) => ({
-  ...state.user
-});
+import { userService } from '../services';
+import { history } from '../helpers';
 
 class Register extends React.Component {
   constructor(props) {
@@ -16,6 +12,7 @@ class Register extends React.Component {
         username: '',
         password: '',
         passwordConfirm: '',
+        isLoading: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -27,24 +24,31 @@ class Register extends React.Component {
     this.setState({ [name]: value });
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit = async event => {
+    event.preventDefault();
 
-    const { username, password, passwordConfirm } = this.state;
-    const { dispatch } = this.props;
-    if (username && password && passwordConfirm) {
-        if (password !== passwordConfirm) {
-          // TODO: Update the page somewhere to tell the user that passwords don't match.
-          return;
-        } else {
-          dispatch(userActions.register(username, password));
-        }
+    if (!this.state.username || !this.state.password) {
+      alert('Must fill out username and password!');
+      return;
+    }
+
+    if (this.state.password != this.state.passwordConfirm) {
+      alert('Passwords do not match!');
+      return;
+    }
+
+    try {
+      this.state.isLoading = true;
+      const user = await userService.register(this.state.username, this.state.password);
+      this.props.updateCurrentUser(user);
+      history.push('/');
+    } catch (e) {
+      alert(e.message);
+      this.state.isLoading = false;
     }
   }
 
   render() {
-    const { loggingIn } = this.props;
-    const { username, password, passwordConfirm } = this.state;
     return (
       <div>
         <p>
@@ -61,7 +65,7 @@ class Register extends React.Component {
                 type="text"
                 placeholder="Username"
                 name="username"
-                value={username}
+                value={this.state.username}
                 onChange={this.handleChange} />
             </fieldset>
 
@@ -70,7 +74,7 @@ class Register extends React.Component {
                 type="password"
                 placeholder="Password"
                 name="password"
-                value={password}
+                value={this.state.password}
                 onChange={this.handleChange} />
             </fieldset>
 
@@ -79,13 +83,13 @@ class Register extends React.Component {
                 type="password"
                 placeholder="Confirm Password"
                 name="passwordConfirm"
-                value={passwordConfirm}
+                value={this.state.passwordConfirm}
                 onChange={this.handleChange} />
             </fieldset>
 
             <button
               type="submit"
-              disabled={loggingIn}>
+              disabled={this.state.loggingIn}>
               Sign up
             </button>
 
@@ -96,5 +100,4 @@ class Register extends React.Component {
   }
 }
 
-const connectedRegister = connect(mapStateToProps)(Register);
-export { connectedRegister as Register }; 
+export { Register }; 
