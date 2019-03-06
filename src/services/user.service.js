@@ -43,11 +43,14 @@ function register(username, password) {
     });
 }
 
-function update(properties) {
+function update(property, value) {
+    let body = {};
+    body[property] = value;
+    
     const requestOptions = {
         method: 'PUT',
         headers: Object.assign({'Content-Type': 'application/json'}, authHeader()),
-        body: JSON.stringify(properties),
+        body: JSON.stringify(body),
     }
 
     return fetch(`${url}/user`, requestOptions)
