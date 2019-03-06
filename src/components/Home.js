@@ -1,10 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import { userService } from '../services';
 
 class Home extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleLogout = this.handleLogout.bind(this);
+  }
+
   handleLogout() {
+    this.props.updateCurrentUser(null);
     userService.logout();
   }
 
@@ -13,7 +19,7 @@ class Home extends React.Component {
       <div>
         <h1>Hi, {this.props.currentUser.username}!</h1>
         <p>
-          <Link to='/login' onClick={this.handleLogout}>Logout</Link>
+          <button onClick={this.handleLogout}>Logout</button>
         </p>
       </div>
     );
