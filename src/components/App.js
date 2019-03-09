@@ -12,7 +12,7 @@ class App extends React.Component {
 
     try {
       currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    } catch {
+    } catch (e) {
       currentUser = null;
     }
     
