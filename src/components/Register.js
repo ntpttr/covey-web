@@ -39,7 +39,7 @@ class Register extends React.Component {
 
     try {
       this.state.isLoading = true;
-      const user = await userService.register(this.state.username, this.state.password);
+      const user = await userService.registerUser(this.state.username, this.state.password);
       this.props.updateCurrentUser(user);
       history.push('/');
     } catch (e) {

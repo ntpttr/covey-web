@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { history } from '../helpers';
 import { userService } from '../services';
 
 class Account extends React.Component {
@@ -13,12 +14,13 @@ class Account extends React.Component {
         isLoading: false,
     };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleFormChange = this.handleFormChange.bind(this);
     this.handleSubmitUsername = this.handleSubmitUsername.bind(this);
     this.handleSubmitPassword = this.handleSubmitPassword.bind(this);
+    this.handleDeleteAccount = this.handleDeleteAccount.bind(this);
   }
 
-  handleChange(e) {
+  handleFormChange(e) {
     const { name, value } = e.target;
     this.setState({ [name]: value });
   }
@@ -28,7 +30,7 @@ class Account extends React.Component {
 
     try {
       this.state.isLoading = true;
-      const user = await userService.update('username', this.state.username);
+      const user = await userService.updateUser('username', this.state.username);
       this.props.updateCurrentUser(user);
     } catch (e) {
       alert(e.message);
@@ -41,8 +43,20 @@ class Account extends React.Component {
 
     try {
       this.state.isLoading = true;
-      const user = await userService.update('password', this.state.password);
+      const user = await userService.updateUser('password', this.state.password);
       this.props.updateCurrentUser(user);
+    } catch (e) {
+      alert(e.message);
+      this.state.isLoading = false;
+    }
+  }
+
+  handleDeleteAccount = async () => {
+    try{
+      this.state.isLoading = true;
+      await userService.deleteUser();
+      this.props.updateCurrentUser(null);
+      history.push('/');
     } catch (e) {
       alert(e.message);
       this.state.isLoading = false;
@@ -62,7 +76,7 @@ class Account extends React.Component {
                 placeholder="Username"
                 name="username"
                 value={username}
-                onChange={this.handleChange} />
+                onChange={this.handleFormChange} />
             </fieldset>
 
             <button
@@ -82,7 +96,7 @@ class Account extends React.Component {
                 placeholder="Password"
                 name="password"
                 value={password}
-                onChange={this.handleChange} />
+                onChange={this.handleFormChange} />
             </fieldset>
 
             <fieldset>
@@ -91,7 +105,7 @@ class Account extends React.Component {
                 placeholder="Confirm Password"
                 name="passwordConfirm"
                 value={passwordConfirm}
-                onChange={this.handleChange} />
+                onChange={this.handleFormChange} />
             </fieldset>
 
             <button
@@ -101,6 +115,11 @@ class Account extends React.Component {
 
           </fieldset>
         </form>
+
+        <button
+          onClick={this.handleDeleteAccount}>
+          Delete Account
+        </button>
       </div>
     );
   }

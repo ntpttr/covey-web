@@ -2,12 +2,29 @@ import { authHeader } from '../helpers';
 
 export const userService = {
     login,
-    register,
-    update,
+    getCurrentUser,
+    registerUser,
+    updateUser,
+    deleteUser,
     logout
 };
 
 const url = 'http://localhost:3000';
+
+function getCurrentUser() {
+    const requestOptions = {
+        method: 'GET',
+        headers: Object.assign({'Content-Type': 'application/json'}, authHeader()),
+    }
+
+    return fetch(`${url}/user`, requestOptions)
+    .then(response => {
+        if (!response.ok) {
+            return null;
+        }
+        return response.user;
+    });
+}
 
 function login(username, password) {
     const requestOptions = {
@@ -17,16 +34,16 @@ function login(username, password) {
     };
 
     return fetch(`${url}/user/login`, requestOptions)
-        .then(handleResponse)
-        .then(response => {
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('currentUser', JSON.stringify(response.user));
+    .then(handleResponse)
+    .then(response => {
+        // store jwt token in local storage to keep user logged in between page refreshes
+        localStorage.setItem('currentUser', JSON.stringify(response.user));
 
-            return response.user;
-        });
+        return response.user;
+    });
 }
 
-function register(username, password) {
+function registerUser(username, password) {
     const requestOptions = {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -36,14 +53,14 @@ function register(username, password) {
     return fetch(`${url}/user`, requestOptions)
     .then(handleResponse)
     .then(response => {
-        // store user details and jwt token in local storage to keep user logged in between page refreshes
+        // store jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem('currentUser', JSON.stringify(response.user));
 
         return response.user;
     });
 }
 
-function update(property, value) {
+function updateUser(property, value) {
     let body = {};
     body[property] = value;
     
@@ -51,12 +68,25 @@ function update(property, value) {
         method: 'PUT',
         headers: Object.assign({'Content-Type': 'application/json'}, authHeader()),
         body: JSON.stringify(body),
-    }
+    };
 
     return fetch(`${url}/user`, requestOptions)
     .then(handleResponse)
     .then(response => {
         return response.user;
+    });
+}
+
+function deleteUser() {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: Object.assign({'Content-Type': 'application/json'}, authHeader()),
+    }
+
+    return fetch(`${url}/user`, requestOptions)
+    .then(handleResponse)
+    .then(response => {
+        logout();
     });
 }
 
@@ -68,6 +98,7 @@ function logout() {
 function handleResponse(response) {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
+        /*
         if (!response.ok) {
             if (response.status === 401) {
                 // auto logout if 401 response returned from api
@@ -78,6 +109,7 @@ function handleResponse(response) {
             const error = (data && data.message) || response.statusText;
             return Promise.reject(error);
         }
+        */
 
         return data;
     });
