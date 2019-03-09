@@ -8,8 +8,14 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    var currentUser;
 
+    try {
+      currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    } catch {
+      currentUser = null;
+    }
+    
     this.state = {
       appName: 'Covey',
       currentUser: currentUser
