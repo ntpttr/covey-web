@@ -3,6 +3,7 @@ import { Route, Router } from 'react-router-dom';
 
 import { Account, Header, Home, Login, Register, PrivateRoute } from '../components';
 import { history } from '../helpers';
+import { userService } from '../services';
 
 class App extends React.Component {
   constructor(props) {
@@ -13,7 +14,9 @@ class App extends React.Component {
     try {
       currentUser = JSON.parse(localStorage.getItem('currentUser'));
     } catch (e) {
+      // The current user stored in the browser has become malformed, logout.
       currentUser = null;
+      userService.logout();
     }
     
     this.state = {
