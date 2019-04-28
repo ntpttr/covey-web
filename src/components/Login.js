@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../styles/Login.css';
 
 import { userService } from '../services';
 import { history } from '../helpers';
@@ -45,9 +46,9 @@ class Login extends React.Component {
   render() {
     const { username, password } = this.state;
     return (
-      <div>
+      <div class="loginbox">
         <p>
-          <Link to="/register">
+          <Link class="link" to="/register">
             New User?
           </Link>
         </p>
