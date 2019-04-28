@@ -32,8 +32,8 @@ class Account extends React.Component {
       this.state.isLoading = true;
       const user = await userService.updateUser('username', this.state.username);
       this.props.updateCurrentUser(user);
-    } catch (e) {
-      alert(e.message);
+    } catch (message) {
+      alert(message);
       this.state.isLoading = false;
     }
   }
@@ -45,8 +45,8 @@ class Account extends React.Component {
       this.state.isLoading = true;
       const user = await userService.updateUser('password', this.state.password);
       this.props.updateCurrentUser(user);
-    } catch (e) {
-      alert(e.message);
+    } catch (message) {
+      alert(message);
       this.state.isLoading = false;
     }
   }
@@ -57,8 +57,8 @@ class Account extends React.Component {
       await userService.deleteUser();
       this.props.updateCurrentUser(null);
       history.push('/');
-    } catch (e) {
-      alert(e.message);
+    } catch (message) {
+      alert(message);
       this.state.isLoading = false;
     }
   }
