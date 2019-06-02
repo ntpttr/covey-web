@@ -34,11 +34,12 @@ class Login extends React.Component {
 
     try {
       this.state.loggingIn = true;
-      const user = await userService.login(this.state.username, this.state.password);
-      this.props.updateCurrentUser(user);
+      await userService.login(this.state.username, this.state.password);
+      this.props.updateLoginState(true);
       history.push('/');
     } catch (message) {
       alert(message);
+      this.props.updateLoginState(false);
       this.state.loggingIn = false;
     }
   }
@@ -46,9 +47,9 @@ class Login extends React.Component {
   render() {
     const { username, password } = this.state;
     return (
-      <div class="loginbox">
+      <div className="loginbox">
         <p>
-          <Link class="link" to="/register">
+          <Link className="link" to="/register">
             New User?
           </Link>
         </p>

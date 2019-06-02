@@ -3,33 +3,24 @@ import { Route, Router } from 'react-router-dom';
 
 import { Account, Header, Home, Login, Register, PrivateRoute } from '../components';
 import { history } from '../helpers';
-import { userService } from '../services';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
-    var currentUser;
-
-    try {
-      currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    } catch (e) {
-      // The current user stored in the browser has become malformed, logout.
-      currentUser = null;
-      userService.logout();
-    }
+    var loggedIn = localStorage.getItem('currentUser');
     
     this.state = {
       appName: 'Covey',
-      currentUser: currentUser
+      loggedIn: loggedIn,
     }
 
-    this.updateCurrentUser = this.updateCurrentUser.bind(this);
+    this.updateLoginState = this.updateLoginState.bind(this);
   }
 
-  updateCurrentUser(user) {
+  updateLoginState(login) {
     this.setState({
-      currentUser: user,
+      loggedIn: login,
     });
   }
 
@@ -38,30 +29,25 @@ class App extends React.Component {
       <div>
         <Router history={history}>
           <div>
-            <Header
+            <Header 
               appName={this.state.appName}
-              currentUser={this.state.currentUser}
+              loggedIn={this.state.loggedIn}
             />
             <PrivateRoute
               exact path="/"
-              component={() =>
-                <Home
-                  currentUser = {this.state.currentUser}
-                  updateCurrentUser = {this.updateCurrentUser}
-                />
-              }
+              component={() => <Home updateLoginState={this.updateLoginState} />}
             />
             <PrivateRoute
               path="/account"
-              component={() => <Account updateCurrentUser = {this.updateCurrentUser} />}
+              component={() => <Account />}
             />
             <Route
               path="/login"
-              component={() => <Login updateCurrentUser = {this.updateCurrentUser} />}
+              component={() => <Login updateLoginState={this.updateLoginState} />}
             />
             <Route
               path="/register"
-              component={() => <Register updateCurrentUser = {this.updateCurrentUser} />}
+              component={() => <Register updateLoginState={this.updateLoginState} />}
             />
           </div>
         </Router>

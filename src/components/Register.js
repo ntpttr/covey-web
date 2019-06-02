@@ -32,18 +32,19 @@ class Register extends React.Component {
       return;
     }
 
-    if (this.state.password != this.state.passwordConfirm) {
+    if (this.state.password !== this.state.passwordConfirm) {
       alert('Passwords do not match!');
       return;
     }
 
     try {
       this.state.isLoading = true;
-      const user = await userService.registerUser(this.state.username, this.state.password);
-      this.props.updateCurrentUser(user);
+      await userService.registerUser(this.state.username, this.state.password);
+      this.props.updateLoginState(true);
       history.push('/');
     } catch (message) {
       alert(message);
+      this.props.updateLoginState(false);
       this.state.isLoading = false;
     }
   }

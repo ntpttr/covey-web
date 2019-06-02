@@ -18,10 +18,8 @@ function getCurrentUser() {
     }
 
     return fetch(`${url}/user`, requestOptions)
+    .then(handleResponse)
     .then(response => {
-        if (!response.ok) {
-            return null;
-        }
         return response.user;
     });
 }
@@ -75,7 +73,7 @@ function updateUser(property, value) {
     .then(response => {
         // store jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem('currentUser', JSON.stringify(response.user));
-        
+
         return response.user;
     });
 }

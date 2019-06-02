@@ -4,22 +4,22 @@ import '../styles/Header.min.css';
 
 const LoggedOutView = (props) => {
   // Only display if there is no logged in user
-  if (!props.currentUser) {
+  if (!props.loggedIn) {
     return (
-    <div class="header">
-      <ul class="navigation">
-        <li class="nav-item">
-          <Link class="link" to="/">
+    <div className="header">
+      <ul className="navigation">
+        <li className="nav-item">
+          <Link className="link" to="/">
             Home
           </Link>
         </li>
-        <li class="nav-item">
-          <Link class="link" to="/login">
+        <li className="nav-item">
+          <Link className="link" to="/login">
             Sign in
           </Link>
         </li>
-        <li class="nav-item">
-          <Link class="link" to="/register">
+        <li className="nav-item">
+          <Link className="link" to="/register">
             Sign up
           </Link>
         </li>
@@ -32,17 +32,17 @@ const LoggedOutView = (props) => {
 
 const LoggedInView = (props) => {
   // Only display if there is a logged in user
-  if (props.currentUser) {
+  if (props.loggedIn) {
     return (
-    <div class="header">
+    <div className="header">
       <ul>
         <li>
-          <Link class="link" to="/">
+          <Link className="link" to="/">
             Home
           </Link>
         </li>
         <li>
-          <Link class="link" to="/account">
+          <Link className="link" to="/account">
             Account
           </Link>
         </li>
@@ -57,14 +57,14 @@ const LoggedInView = (props) => {
 class Header extends React.Component {
   render() {
     return (
-    <div class="header">
+    <div className="header">
       <nav>
         <div>
-          <Link class="link" to="/">
+          <Link className="link" to="/">
             {this.props.appName}
           </Link>
-          <LoggedOutView currentUser={this.props.currentUser} />
-          <LoggedInView currentUser={this.props.currentUser} />
+          <LoggedOutView loggedIn={this.props.loggedIn} />
+          <LoggedInView loggedIn={this.props.loggedIn} />
         </div>
       </nav>
      </div>
