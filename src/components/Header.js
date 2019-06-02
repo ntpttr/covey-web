@@ -2,10 +2,29 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import '../styles/Header.min.css';
 
-const LoggedOutView = (props) => {
-  // Only display if there is no logged in user
-  if (!props.loggedIn) {
+const ActionsView = (props) => {
+  // Logged in action bar
+  if (props.loggedIn) {
     return (
+      <div className="header">
+        <ul>
+          <li>
+            <Link className="link" to="/">
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link className="link" to="/account">
+              Account
+            </Link>
+          </li>
+        </ul>
+      </div>
+    );
+  }
+
+  // Logged out action bar
+  return (
     <div className="header">
       <ul className="navigation">
         <li className="nav-item">
@@ -25,33 +44,7 @@ const LoggedOutView = (props) => {
         </li>
       </ul>
     </div>
-    );
-  }
-  return null;
-};
-
-const LoggedInView = (props) => {
-  // Only display if there is a logged in user
-  if (props.loggedIn) {
-    return (
-    <div className="header">
-      <ul>
-        <li>
-          <Link className="link" to="/">
-            Home
-          </Link>
-        </li>
-        <li>
-          <Link className="link" to="/account">
-            Account
-          </Link>
-        </li>
-      </ul>
-    </div>
-    );
-  }
-
-  return null;
+  );
 };
 
 class Header extends React.Component {
@@ -63,8 +56,7 @@ class Header extends React.Component {
           <Link className="link" to="/">
             {this.props.appName}
           </Link>
-          <LoggedOutView loggedIn={this.props.loggedIn} />
-          <LoggedInView loggedIn={this.props.loggedIn} />
+          <ActionsView loggedIn={this.props.loggedIn} />
         </div>
       </nav>
      </div>
