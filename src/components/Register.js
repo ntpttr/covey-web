@@ -12,7 +12,7 @@ class Register extends React.Component {
         username: '',
         password: '',
         passwordConfirm: '',
-        isLoading: false,
+        loggingIn: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -38,14 +38,14 @@ class Register extends React.Component {
     }
 
     try {
-      this.state.isLoading = true;
+      this.state.loggingIn = true;
       await userService.registerUser(this.state.username, this.state.password);
       this.props.updateLoginState(true);
       history.push('/');
     } catch (message) {
       alert(message);
       this.props.updateLoginState(false);
-      this.state.isLoading = false;
+      this.state.loggingIn = false;
     }
   }
 
