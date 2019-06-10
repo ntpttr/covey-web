@@ -30,10 +30,11 @@ class Account extends React.Component {
 
     try {
       this.state.isLoading = true;
-      await userService.updateUser('username', this.state.username);
+      const user = await userService.updateUser('username', this.state.username);
       this.setState({
         username: '',
       });
+      this.props.updateCurrentUser(user);
       alert('Updated username.');
     } catch (message) {
       alert(message);

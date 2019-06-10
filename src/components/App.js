@@ -2,25 +2,25 @@ import React from 'react';
 import { Route, Router } from 'react-router-dom';
 
 import { Account, Header, Home, Login, Register, PrivateRoute } from '../components';
-import { history } from '../helpers';
+import { history, getCurrentUser } from '../helpers';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
-    var loggedIn = localStorage.getItem('currentUser');
+    var currentUser = getCurrentUser();
     
     this.state = {
       appName: 'Covey',
-      loggedIn: loggedIn,
+      currentUser: currentUser,
     }
 
-    this.updateLoginState = this.updateLoginState.bind(this);
+    this.updateCurrentUser = this.updateCurrentUser.bind(this);
   }
 
-  updateLoginState(login) {
+  updateCurrentUser(user) {
     this.setState({
-      loggedIn: login,
+      currentUser: user,
     });
   }
 
@@ -31,23 +31,23 @@ class App extends React.Component {
           <div>
             <Header 
               appName={this.state.appName}
-              loggedIn={this.state.loggedIn}
+              currentUser={this.state.currentUser}
             />
             <PrivateRoute
               exact path="/"
-              component={() => <Home updateLoginState={this.updateLoginState} />}
+              component={() => <Home updateCurrentUser={this.updateCurrentUser} currentUser={this.state.currentUser} />}
             />
             <PrivateRoute
               path="/account"
-              component={() => <Account />}
+              component={() => <Account updateCurrentUser={this.updateCurrentUser} />}
             />
             <Route
               path="/login"
-              component={() => <Login updateLoginState={this.updateLoginState} />}
+              component={() => <Login updateCurrentUser={this.updateCurrentUser} />}
             />
             <Route
               path="/register"
-              component={() => <Register updateLoginState={this.updateLoginState} />}
+              component={() => <Register updateCurrentUser={this.updateCurrentUser} />}
             />
           </div>
         </Router>

@@ -2,21 +2,29 @@ import React from 'react';
 
 import { userService } from '../services';
 
+const GroupCard = (group) => {
+  return (
+    <div>
+      {group.name}
+    </div>
+  );
+}
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
 
     var username;
 
-    // Get username from local storage before making the call to get
+    // Get username from props before making the call to get
     // user details when the component mounts.
     try {
-      let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      let currentUser = this.props.currentUser;
       username = currentUser.username;
     } catch (e) {
       // The current user stored in the browser has become malformed, logout.
       username = null;
-      userService.logout();
+      this.handleLogout();
     }
 
     this.state = {
@@ -30,7 +38,7 @@ class Home extends React.Component {
 
   handleLogout() {
     userService.logout();
-    this.props.updateLoginState(false);
+    this.props.updateCurrentUser(null);
   }
 
   getUserData = async () => {
@@ -50,10 +58,34 @@ class Home extends React.Component {
     this.getUserData();
   }
 
+  renderGroups(groups) {
+    if (groups === null) {
+      return (
+        <div>
+          Loading groups...
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        {groups.map((group, index) => (
+          <GroupCard key={index} group={group} />
+        ))}
+      </div>
+    );
+  }
+
   render() {
     return (
       <div>
         <h1>Hi, {this.state.username}!</h1>
+        {this.state.groups &&
+          <div>
+            Groups:
+            {this.state.groups.map((group) => <li key={group._id}>{group.name}</li>)}
+          </div>
+        }
         <p>
           <button onClick={this.handleLogout}>Logout</button>
         </p>

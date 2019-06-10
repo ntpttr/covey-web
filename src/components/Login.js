@@ -34,12 +34,12 @@ class Login extends React.Component {
 
     try {
       this.state.loggingIn = true;
-      await userService.login(this.state.username, this.state.password);
-      this.props.updateLoginState(true);
+      const user = await userService.login(this.state.username, this.state.password);
+      this.props.updateCurrentUser(user);
       history.push('/');
     } catch (message) {
       alert(message);
-      this.props.updateLoginState(false);
+      this.props.updateCurrentUser(null);
       this.state.loggingIn = false;
     }
   }

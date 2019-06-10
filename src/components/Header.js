@@ -4,7 +4,7 @@ import '../styles/Header.min.css';
 
 const ActionsView = (props) => {
   // Logged in action bar
-  if (props.loggedIn) {
+  if (props.currentUser) {
     return (
       <div className="header">
         <ul>
@@ -16,6 +16,11 @@ const ActionsView = (props) => {
           <li>
             <Link className="link" to="/account">
               Account
+            </Link>
+          </li>
+          <li>
+            <Link className="link" to="/account">
+              {props.currentUser.username}
             </Link>
           </li>
         </ul>
@@ -56,7 +61,7 @@ class Header extends React.Component {
           <Link className="link" to="/">
             {this.props.appName}
           </Link>
-          <ActionsView loggedIn={this.props.loggedIn} />
+          <ActionsView currentUser={this.props.currentUser} />
         </div>
       </nav>
      </div>
