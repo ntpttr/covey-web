@@ -47,42 +47,53 @@ class Login extends React.Component {
   render() {
     const { username, password } = this.state;
     return (
-      <div className="loginbox">
-        <p>
-          <Link className="link" to="/register">
-            New User?
-          </Link>
-        </p>
+      <div class="comp_login row justify-content-center">
+        <div className="loginbox">
+          <p>
+            <Link className="link" to="/register">
+              New User?
+            </Link>
+          </p>
 
-        <form onSubmit={this.handleSubmit}>
-          <fieldset>
-
+          <form onSubmit={this.handleSubmit}>
             <fieldset>
-              <input
-                type="text"
-                placeholder="Username"
-                name="username"
-                value={username}
-                onChange={this.handleChange} />
-            </fieldset>
 
-            <fieldset>
-              <input
-                type="password"
-                placeholder="Password"
-                name="password"
-                value={password}
-                onChange={this.handleChange} />
-            </fieldset>
+            <form onSubmit={this.handleSubmit}>
+              <fieldset>
 
-            <button
-              type="submit"
-              disabled={this.state.loggingIn}>
-              Sign in
-            </button>
+                <fieldset>
+                  <input
+                    type="text"
+                    placeholder="Username"
+                    name="username"
+                    value={username}
+                    onChange={this.handleChange} />
+                </fieldset>
 
-          </fieldset>
-        </form>
+                <fieldset>
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    name="password"
+                    value={password}
+                    onChange={this.handleChange} />
+                </fieldset>
+
+                <button
+                  type="submit"
+                  disabled={this.state.loggingIn}>
+                  Sign in
+                </button>
+
+              </fieldset>
+            </form>
+            <p class="registerlink">
+              <Link to="/register">
+                New User?
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     );
   }

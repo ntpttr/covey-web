@@ -1,3 +1,39 @@
-#root {
-    background: #000000;
+/* IMPORTS */
+@import "variables";
+@import "reset";
+
+form {
+  display: inline;
+  font-family: $fontstack;
+}
+
+input {
+  font-family: $fontstack;
+  padding: 20px;
+  margin: 20px;
+  display: inline;
+  width: 100%;
+  border: 1px solid #BFD9BD;
+  border-radius: 10px;
+  outline: none;
+  &:focus {
+    border: 1px solid #FFC50C;
+    box-shadow: 0px 0px 2px 0px #FFC50C;
+  }
+}
+
+button {
+  margin: 20px;
+  padding: 10px;
+  width: 100%;
+  background: #FFC50C;
+  border-radius: 25px;
+  font-family: $fontstack;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  cursor: pointer;
+  outline: none;
+  &:hover {
+    background: #FFD961;
+  }
 }

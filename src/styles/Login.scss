@@ -1,19 +1,28 @@
+/* IMPORTS */
+@import "variables";
+
 .loginbox {
-    align: center;
-    padding: 20px;
-    background: #8d8d8d;
+  align: center;
+  padding: 30px;
+  background: #FFFFFF;
+  border-radius: 15px;
+  -webkit-box-shadow: 3px 3px 8px 0px rgba(59,109,56,0.12);
+  -moz-box-shadow: 3px 3px 8px 0px rgba(59,109,56,0.12);
+  box-shadow: 3px 3px 8px 0px rgba(59,109,56,0.12);
 }
 
-form {
-    display: inline;
-}
-
-input {
-    padding: 5px;
-    margin: 5px;
-    display: inline;
-}
-
-button {
-    margin: 5px;
+.registerlink {
+  text-align: center;
+  margin: 15px 0 0 0;
+  a {
+    font-family: $fontstack;
+    font-size: 14px;
+    font-weight: 400;
+    font-style: italic;
+    color: #3B6D38;
+    &:hover {
+      text-decoration: none;
+      color: #FFC50C;
+    }
+  }
 }

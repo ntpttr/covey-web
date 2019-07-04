@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../styles/Register.min.css';
 
 import { userService } from '../services';
 import { history } from '../helpers';
@@ -52,12 +53,6 @@ class Register extends React.Component {
   render() {
     return (
       <div>
-        <p>
-          <Link to="/login">
-            Have an Account?
-          </Link>
-        </p>
-
         <form onSubmit={this.handleSubmit}>
           <fieldset>
 
@@ -96,9 +91,15 @@ class Register extends React.Component {
 
           </fieldset>
         </form>
+
+        <p class="loginlink">
+          <Link to="/login">
+            Have an Account?
+          </Link>
+        </p>
       </div>
     );
   }
 }
 
-export { Register }; 
+export { Register };

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Router } from 'react-router-dom';
+import '../styles/App.min.css';
 
 import { Account, Header, Home, Login, Register, PrivateRoute } from '../components';
 import { history, getCurrentUser } from '../helpers';
@@ -9,7 +10,7 @@ class App extends React.Component {
     super(props);
 
     var currentUser = getCurrentUser();
-    
+
     this.state = {
       appName: 'Covey',
       currentUser: currentUser,
@@ -29,7 +30,7 @@ class App extends React.Component {
       <div>
         <Router history={history}>
           <div>
-            <Header 
+            <Header
               appName={this.state.appName}
               currentUser={this.state.currentUser}
             />
@@ -56,4 +57,4 @@ class App extends React.Component {
   }
 }
 
-export { App }; 
+export { App };
