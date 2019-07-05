@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/Login.min.css';
+import '../styles/css/Login.min.css';
 
 import { userService } from '../services';
 import { history } from '../helpers';
@@ -47,16 +47,8 @@ class Login extends React.Component {
   render() {
     const { username, password } = this.state;
     return (
-      <div class="comp_login row justify-content-center">
-        <div className="loginbox">
-          <p>
-            <Link className="link" to="/register">
-              New User?
-            </Link>
-          </p>
-
-          <form onSubmit={this.handleSubmit}>
-            <fieldset>
+      <div className="comp_login row justify-content-center">
+        <div className="login_wrapper">
 
             <form onSubmit={this.handleSubmit}>
               <fieldset>
@@ -87,14 +79,14 @@ class Login extends React.Component {
 
               </fieldset>
             </form>
-            <p class="registerlink">
+
+            <p className="registerlink">
               <Link to="/register">
                 New User?
               </Link>
             </p>
           </div>
         </div>
-      </div>
     );
   }
 }

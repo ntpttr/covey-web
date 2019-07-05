@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import '../styles/Header.min.css';
+import '../styles/css/Header.min.css';
 
 const ActionsView = (props) => {
   // Logged in action bar

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Router } from 'react-router-dom';
-import '../styles/App.min.css';
+import '../styles/css/App.min.css';
 
 import { Account, Header, Home, Login, Register, PrivateRoute } from '../components';
 import { history, getCurrentUser } from '../helpers';

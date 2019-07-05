@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/Register.min.css';
+import '../styles/css/Register.min.css';
 
 import { userService } from '../services';
 import { history } from '../helpers';
@@ -12,91 +12,134 @@ class Register extends React.Component {
     this.state = {
         username: '',
         password: '',
+        email: '',
         passwordConfirm: '',
         loggingIn: false,
+        errors: [],
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(e) {
-    const { name, value } = e.target;
+  handleChange(event) {
+    const { name, value } = event.target;
     this.setState({ [name]: value });
   }
 
   handleSubmit = async event => {
     event.preventDefault();
-
-    if (!this.state.username || !this.state.password) {
-      alert('Must fill out username and password!');
-      return;
-    }
-
-    if (this.state.password !== this.state.passwordConfirm) {
-      alert('Passwords do not match!');
-      return;
-    }
+    //const errors = this.validate();
+    //console.log(errors);
+    //if (errors.length) {
+    //  this.state.errors = errors;
+    //  return;
+    //}
 
     try {
       this.state.loggingIn = true;
-      const user = await userService.registerUser(this.state.username, this.state.password);
-      this.props.updateCurrentUser(user);
+      const message = await userService.registerUser(
+        this.state.username,
+        this.state.email,
+        this.state.password);
+      alert(message);
       history.push('/');
     } catch (message) {
       alert(message);
-      this.props.updateCurrentUser(null);
       this.state.loggingIn = false;
     }
   }
 
+  validate() {
+    const errors = [];
+
+    if (!this.state.username) {
+      errors.push("Username can't be empty.");
+    }
+
+    if (!this.state.password) {
+      errors.push("Password can't be empty.");
+    }
+
+    if (!this.state.email) {
+      errors.push("Email can't be empty.");
+    }
+
+    if (this.state.password !== this.state.passwordConfirm) {
+      errors.push("Passwords must match.");
+    }
+    console.log(errors);
+    return errors;
+  }
+
   render() {
+    const {
+      username,
+      email,
+      password,
+      passwordConfirm,
+      loggingIn,
+    } = this.state;
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <fieldset>
-
+      <div className="comp_register row justify-content-center">
+        <div className="register_wrapper">
+          <form onSubmit={this.handleSubmit}>
+            {this.state.errors.map(error => (
+              <p key={error}>{error}</p>
+            ))}
             <fieldset>
-              <input
-                type="text"
-                placeholder="Username"
-                name="username"
-                value={this.state.username}
-                onChange={this.handleChange} />
+
+              <fieldset>
+                <input
+                  type="text"
+                  placeholder="Username"
+                  name="username"
+                  value={username}
+                  onChange={this.handleChange} />
+              </fieldset>
+
+              <fieldset>
+                <input
+                  type="text"
+                  placeholder="Email"
+                  name="email"
+                  value={email}
+                  onChange={this.handleChange} />
+              </fieldset>
+
+              <fieldset>
+                <input
+                  type="password"
+                  placeholder="Password"
+                  name="password"
+                  value={password}
+                  onChange={this.handleChange} />
+              </fieldset>
+
+              <fieldset>
+                <input
+                  type="password"
+                  placeholder="Confirm Password"
+                  name="passwordConfirm"
+                  value={passwordConfirm}
+                  onChange={this.handleChange} />
+              </fieldset>
+
+              <button
+                type="submit"
+                disabled={loggingIn}>
+                Sign up
+              </button>
+
             </fieldset>
+          </form>
 
-            <fieldset>
-              <input
-                type="password"
-                placeholder="Password"
-                name="password"
-                value={this.state.password}
-                onChange={this.handleChange} />
-            </fieldset>
-
-            <fieldset>
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                name="passwordConfirm"
-                value={this.state.passwordConfirm}
-                onChange={this.handleChange} />
-            </fieldset>
-
-            <button
-              type="submit"
-              disabled={this.state.loggingIn}>
-              Sign up
-            </button>
-
-          </fieldset>
-        </form>
-
-        <p class="loginlink">
-          <Link to="/login">
-            Have an Account?
-          </Link>
-        </p>
+          <p className="loginlink">
+            <Link to="/login">
+              Have an Account?
+            </Link>
+          </p>
+        </div>
       </div>
     );
   }
