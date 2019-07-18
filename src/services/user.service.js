@@ -24,11 +24,11 @@ function getCurrentUser() {
     });
 }
 
-function login(username, password) {
+function login(identifier, password) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({identifier, password})
     };
 
     return fetch(`${url}/user/login`, requestOptions)

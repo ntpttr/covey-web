@@ -10,7 +10,7 @@ class Login extends React.Component {
     super(props);
 
     this.state = {
-        username: '',
+        identifier: '',
         password: '',
         loggingIn: false,
     };
@@ -27,14 +27,14 @@ class Login extends React.Component {
   handleSubmit = async event => {
     event.preventDefault();
 
-    if (!this.state.username || !this.state.password) {
-      alert('Must fill out username and password!');
+    if (!this.state.identifier || !this.state.password) {
+      alert('Must fill out username/email and password!');
       return;
     }
 
     try {
       this.state.loggingIn = true;
-      const user = await userService.login(this.state.username, this.state.password);
+      const user = await userService.login(this.state.identifier, this.state.password);
       this.props.updateCurrentUser(user);
       history.push('/');
     } catch (message) {
@@ -45,7 +45,7 @@ class Login extends React.Component {
   }
 
   render() {
-    const { username, password } = this.state;
+    const { identifier, password } = this.state;
     return (
       <div className="comp_login row justify-content-center">
         <div className="login_wrapper">
@@ -56,9 +56,9 @@ class Login extends React.Component {
                 <fieldset>
                   <input
                     type="text"
-                    placeholder="Username"
-                    name="username"
-                    value={username}
+                    placeholder="Username or Email"
+                    name="identifier"
+                    value={identifier}
                     onChange={this.handleChange} />
                 </fieldset>
 
