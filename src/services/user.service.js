@@ -55,14 +55,11 @@ function registerUser(username, email, password) {
     });
 }
 
-function updateUser(property, value) {
-    let body = {};
-    body[property] = value;
-
+function updateUser(properties) {
     const requestOptions = {
-        method: 'PUT',
+        method: 'PATCH',
         headers: Object.assign({'Content-Type': 'application/json'}, authHeader()),
-        body: JSON.stringify(body),
+        body: JSON.stringify(properties),
     };
 
     return fetch(`${url}/user`, requestOptions)
