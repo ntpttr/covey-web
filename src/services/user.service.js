@@ -3,6 +3,7 @@ import { authHeader } from '../helpers';
 export const userService = {
     login,
     getCurrentUser,
+    getUserGroups,
     registerUser,
     updateUser,
     deleteUser,
@@ -21,6 +22,19 @@ function getCurrentUser() {
     .then(handleResponse)
     .then(response => {
         return response.user;
+    });
+}
+
+function getUserGroups() {
+    const requestOptions = {
+        method: 'GET',
+        headers: Object.assign({'Content-Type': 'application/json'}, authHeader()),
+    }
+
+    return fetch(`${url}/user/groups`, requestOptions)
+    .then(handleResponse)
+    .then(response => {
+        return response.groups;
     });
 }
 
