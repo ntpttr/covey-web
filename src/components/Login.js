@@ -48,7 +48,7 @@ class Login extends React.Component {
     const { username, password } = this.state;
     return (
       <div className="comp_login row justify-content-center">
-        <div className="login_wrapper">
+        <div className="login_wrapper col-6">
 
             <form onSubmit={this.handleSubmit}>
               <fieldset>
@@ -73,6 +73,7 @@ class Login extends React.Component {
 
                 <button
                   type="submit"
+                  className="btn-default"
                   disabled={this.state.loggingIn}>
                   Sign in
                 </button>
