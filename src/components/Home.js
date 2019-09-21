@@ -29,6 +29,7 @@ class Home extends React.Component {
 
     this.state = {
       username: username,
+      name: null,
       userImage: null,
       groups: null,
     };
@@ -46,8 +47,19 @@ class Home extends React.Component {
       const user = await userService.getCurrentUser();
       this.setState({
         username: user.username,
+        name: user.name,
         userImage: user.image,
-        groups: user.groups,
+      });
+    } catch (message) {
+      alert(message);
+    }
+  }
+
+  getUserGroups = async () => {
+    try {
+      const groups = await userService.getUserGroups();
+      this.setState({
+        groups: groups,
       });
     } catch (message) {
       alert(message);
@@ -56,6 +68,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     this.getUserData();
+    this.getUserGroups();
   }
 
   renderGroups(groups) {
@@ -79,11 +92,11 @@ class Home extends React.Component {
   render() {
     return (
       <div>
-        <h1>Hi, {this.state.username}!</h1>
+        <h1>Hi, {this.state.name}!</h1>
         {this.state.groups &&
           <div>
             Groups:
-            {this.state.groups.map((group) => <li key={group._id}>{group.name}</li>)}
+            {this.state.groups.map((group) => <li key={group._id}>{group.displayName}</li>)}
           </div>
         }
         <p>

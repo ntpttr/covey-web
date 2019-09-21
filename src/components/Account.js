@@ -8,15 +8,15 @@ class Account extends React.Component {
     super(props);
 
     this.state = {
-        username: '',
+        name: '',
+        email: '',
         password: '',
         passwordConfirm: '',
         isLoading: false,
     };
 
     this.handleFormChange = this.handleFormChange.bind(this);
-    this.handleSubmitUsername = this.handleSubmitUsername.bind(this);
-    this.handleSubmitPassword = this.handleSubmitPassword.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDeleteAccount = this.handleDeleteAccount.bind(this);
   }
 
@@ -25,34 +25,36 @@ class Account extends React.Component {
     this.setState({ [name]: value });
   }
 
-  handleSubmitUsername = async event => {
+  handleSubmit = async event => {
     event.preventDefault();
 
-    try {
-      this.state.isLoading = true;
-      const user = await userService.updateUser('username', this.state.username);
-      this.setState({
-        username: '',
-      });
-      this.props.updateCurrentUser(user);
-      alert('Updated username.');
-    } catch (message) {
-      alert(message);
-      this.state.isLoading = false;
+    const {name, email, password, passwordConfirm} = this.state;
+
+    let body = {};
+
+    if (name.length > 0) {
+      body['name'] = name;
     }
-  }
 
-  handleSubmitPassword = async event => {
-    event.preventDefault();
+    if (email.length > 0) {
+      body['email'] = email;
+    }
+
+    if (password.length > 0 && password === passwordConfirm) {
+      body['password'] = password;
+    }
 
     try {
       this.state.isLoading = true;
-      await userService.updateUser('password', this.state.password);
+      const user = await userService.updateUser(body);
       this.setState({
+        name: '',
+        email: '',
         password: '',
         passwordConfirm: '',
       });
-      alert('Updated password.');
+      this.props.updateCurrentUser(user);
+      alert('Your profile has been updated.');
     } catch (message) {
       alert(message);
       this.state.isLoading = false;
@@ -72,31 +74,29 @@ class Account extends React.Component {
   }
 
   render() {
-    const { username, password, passwordConfirm } = this.state;
+    const { name, email, password, passwordConfirm } = this.state;
     return (
       <div>
-        <form onSubmit={this.handleSubmitUsername}>
+        <form onSubmit={this.handleSubmit}>
           <fieldset>
 
             <fieldset>
               <input
                 type="text"
-                placeholder="Username"
-                name="username"
-                value={username}
+                placeholder="Name"
+                name="name"
+                value={name}
                 onChange={this.handleFormChange} />
             </fieldset>
 
-            <button
-              type="submit">
-              Update Username
-            </button>
-
-          </fieldset>
-        </form>
-
-        <form onSubmit={this.handleSubmitPassword}>
-          <fieldset>
+            <fieldset>
+              <input
+                type="text"
+                placeholder="Email"
+                name="email"
+                value={email}
+                onChange={this.handleFormChange} />
+            </fieldset>
 
             <fieldset>
               <input
@@ -118,7 +118,7 @@ class Account extends React.Component {
 
             <button
               type="submit">
-              Update Password
+              Update
             </button>
 
           </fieldset>

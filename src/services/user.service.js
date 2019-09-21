@@ -3,6 +3,7 @@ import { authHeader } from '../helpers';
 export const userService = {
     login,
     getCurrentUser,
+    getUserGroups,
     registerUser,
     updateUser,
     deleteUser,
@@ -11,27 +12,14 @@ export const userService = {
 
 const url = 'http://localhost:3000';
 
-function getCurrentUser() {
-    const requestOptions = {
-        method: 'GET',
-        headers: Object.assign({'Content-Type': 'application/json'}, authHeader()),
-    }
-
-    return fetch(`${url}/user`, requestOptions)
-    .then(handleResponse)
-    .then(response => {
-        return response.user;
-    });
-}
-
-function login(username, password) {
+function login(identifier, password) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({identifier, password})
     };
 
-    return fetch(`${url}/user/login`, requestOptions)
+    return fetch(`${url}/users/login`, requestOptions)
     .then(handleResponse)
     .then(response => {
         // store jwt token in local storage to keep user logged in between page refreshes
@@ -48,24 +36,47 @@ function registerUser(username, email, password) {
         body: JSON.stringify({username, email, password}),
     }
 
-    return fetch(`${url}/user`, requestOptions)
+    return fetch(`${url}/users`, requestOptions)
     .then(handleResponse)
     .then(response => {
         return response.message;
     });
 }
 
-function updateUser(property, value) {
-    let body = {};
-    body[property] = value;
-
+function getCurrentUser() {
     const requestOptions = {
-        method: 'PUT',
+        method: 'GET',
         headers: Object.assign({'Content-Type': 'application/json'}, authHeader()),
-        body: JSON.stringify(body),
+    }
+
+    return fetch(`${url}/me`, requestOptions)
+    .then(handleResponse)
+    .then(response => {
+        return response.user;
+    });
+}
+
+function getUserGroups() {
+    const requestOptions = {
+        method: 'GET',
+        headers: Object.assign({'Content-Type': 'application/json'}, authHeader()),
+    }
+
+    return fetch(`${url}/me/groups`, requestOptions)
+    .then(handleResponse)
+    .then(response => {
+        return response.groups;
+    });
+}
+
+function updateUser(properties) {
+    const requestOptions = {
+        method: 'PATCH',
+        headers: Object.assign({'Content-Type': 'application/json'}, authHeader()),
+        body: JSON.stringify(properties),
     };
 
-    return fetch(`${url}/user`, requestOptions)
+    return fetch(`${url}/me`, requestOptions)
     .then(handleResponse)
     .then(response => {
         // store jwt token in local storage to keep user logged in between page refreshes
@@ -81,7 +92,7 @@ function deleteUser() {
         headers: Object.assign({'Content-Type': 'application/json'}, authHeader()),
     }
 
-    return fetch(`${url}/user`, requestOptions)
+    return fetch(`${url}/me`, requestOptions)
     .then(handleResponse)
     .then(response => {
         logout();
