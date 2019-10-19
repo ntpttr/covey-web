@@ -72,19 +72,13 @@ class Home extends React.Component {
   }
 
   renderGroups(groups) {
-    if (groups === null) {
+    if (groups !== null) {
       return (
         <div>
-          Loading groups...
+          {groups.map((group) => <GroupCard key={group.identifier} group={group} />)}
         </div>
       );
     }
-
-    return (
-      <div>
-        {groups.map((group) => <GroupCard key={group.identifier} group={group} />)}
-      </div>
-    );
   }
 
   render() {
@@ -95,9 +89,6 @@ class Home extends React.Component {
           Groups:
           {this.renderGroups(this.state.groups)}
         </div>
-        <p>
-          <button onClick={this.handleLogout}>Logout</button>
-        </p>
       </div>
     );
   }

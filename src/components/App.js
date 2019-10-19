@@ -32,6 +32,7 @@ class App extends React.Component {
           <div>
             <Header
               appName={this.state.appName}
+              updateCurrentUser={this.updateCurrentUser}
               currentUser={this.state.currentUser}
             />
             <PrivateRoute
