@@ -18,6 +18,11 @@ class Register extends React.Component {
         errors: [],
     };
 
+    this.usernameInput = React.createRef();
+    this.emailInput = React.createRef();
+    this.passwordInput = React.createRef();
+    this.passwordConfirmInput = React.createRef();
+
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -27,14 +32,14 @@ class Register extends React.Component {
     this.setState({ [name]: value });
   }
 
-  handleSubmit = async event => {
+  handleSubmit = async (event) => {
     event.preventDefault();
-    //const errors = this.validate();
-    //console.log(errors);
-    //if (errors.length) {
-    //  this.state.errors = errors;
-    //  return;
-    //}
+
+    const errors = this.validate();
+    if (errors.length) {
+      this.setState({errors: errors});
+      return;
+    }
 
     try {
       this.state.loggingIn = true;
@@ -68,7 +73,7 @@ class Register extends React.Component {
     if (this.state.password !== this.state.passwordConfirm) {
       errors.push("Passwords must match.");
     }
-    console.log(errors);
+
     return errors;
   }
 
@@ -79,22 +84,24 @@ class Register extends React.Component {
       password,
       passwordConfirm,
       loggingIn,
+      errors,
     } = this.state;
+
     return (
       <div className="comp_register row justify-content-center">
-        <div className="register_wrapper">
+        <div className="register_wrapper col-6">
+
           <form onSubmit={this.handleSubmit}>
-            {this.state.errors.map(error => (
-              <p key={error}>{error}</p>
-            ))}
             <fieldset>
 
               <fieldset>
                 <input
                   type="text"
+                  id="username"
                   placeholder="Username"
                   name="username"
                   value={username}
+                  ref={this.usernameInput}
                   onChange={this.handleChange} />
               </fieldset>
 
@@ -104,6 +111,7 @@ class Register extends React.Component {
                   placeholder="Email"
                   name="email"
                   value={email}
+                  ref={this.emailInput}
                   onChange={this.handleChange} />
               </fieldset>
 
@@ -113,6 +121,7 @@ class Register extends React.Component {
                   placeholder="Password"
                   name="password"
                   value={password}
+                  ref={this.passwordInput}
                   onChange={this.handleChange} />
               </fieldset>
 
@@ -122,6 +131,7 @@ class Register extends React.Component {
                   placeholder="Confirm Password"
                   name="passwordConfirm"
                   value={passwordConfirm}
+                  ref={this.passwordConfirmInput}
                   onChange={this.handleChange} />
               </fieldset>
 
@@ -130,6 +140,10 @@ class Register extends React.Component {
                 disabled={loggingIn}>
                 Sign up
               </button>
+
+              {errors.map(error => (
+                <p className="error_message" key={error}>{error}</p>
+              ))}
 
             </fieldset>
           </form>

@@ -69,6 +69,32 @@ function registerUser(username, email, password) {
     });
 }
 
+function getCurrentUser() {
+    const requestOptions = {
+        method: 'GET',
+        headers: Object.assign({'Content-Type': 'application/json'}, authHeader()),
+    }
+
+    return fetch(`${url}/me`, requestOptions)
+    .then(handleResponse)
+    .then(response => {
+        return response.user;
+    });
+}
+
+function getUserGroups() {
+    const requestOptions = {
+        method: 'GET',
+        headers: Object.assign({'Content-Type': 'application/json'}, authHeader()),
+    }
+
+    return fetch(`${url}/me/groups`, requestOptions)
+    .then(handleResponse)
+    .then(response => {
+        return response.groups;
+    });
+}
+
 function updateUser(properties) {
     const requestOptions = {
         method: 'PATCH',

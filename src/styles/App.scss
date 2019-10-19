@@ -1,6 +1,7 @@
 /* IMPORTS */
 @import "variables";
 @import "reset";
+@import "grid";
 @import "atoms";
 
 /* STYLES */
@@ -10,9 +11,8 @@
 }
 
 body {
-  margin: auto;
+	margin: auto;
 	min-height: 100vh;
 	background: rgb(235,249,235);
 	background: linear-gradient(135deg, rgba(235,249,235,1) 0%, rgba(191,217,189,1) 100%);
-	font-family: $fontstack;
 }

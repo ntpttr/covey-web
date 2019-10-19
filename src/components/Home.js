@@ -29,6 +29,7 @@ class Home extends React.Component {
 
     this.state = {
       username: username,
+      name: null,
       userImage: null,
       groups: null,
     };
@@ -46,6 +47,7 @@ class Home extends React.Component {
       const user = await userService.getCurrentUser();
       this.setState({
         username: user.username,
+        name: user.name,
         userImage: user.image,
       });
     } catch (message) {
