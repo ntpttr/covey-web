@@ -2,10 +2,10 @@ import React from 'react';
 
 import { userService } from '../services';
 
-const GroupCard = (group) => {
+const GroupCard = (props) => {
   return (
     <div>
-      {group.name}
+      {props.group.displayName}
     </div>
   );
 }
@@ -47,7 +47,17 @@ class Home extends React.Component {
       this.setState({
         username: user.username,
         userImage: user.image,
-        groups: user.groups,
+      });
+    } catch (message) {
+      alert(message);
+    }
+  }
+
+  getUserGroups = async () => {
+    try {
+      const groups = await userService.getUserGroups();
+      this.setState({
+        groups: groups,
       });
     } catch (message) {
       alert(message);
@@ -56,6 +66,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     this.getUserData();
+    this.getUserGroups();
   }
 
   renderGroups(groups) {
@@ -69,9 +80,7 @@ class Home extends React.Component {
 
     return (
       <div>
-        {groups.map((group, index) => (
-          <GroupCard key={index} group={group} />
-        ))}
+        {groups.map((group) => <GroupCard key={group.identifier} group={group} />)}
       </div>
     );
   }
@@ -80,12 +89,10 @@ class Home extends React.Component {
     return (
       <div>
         <h1>Hi, {this.state.username}!</h1>
-        {this.state.groups &&
-          <div>
-            Groups:
-            {this.state.groups.map((group) => <li key={group._id}>{group.name}</li>)}
-          </div>
-        }
+        <div>
+          Groups:
+          {this.renderGroups(this.state.groups)}
+        </div>
         <p>
           <button onClick={this.handleLogout}>Logout</button>
         </p>
