@@ -1,12 +1,14 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
 import { userService } from '../services';
 
 const GroupCard = (props) => {
+  let groupPath = "/group/" + props.group.identifier;
   return (
-    <div>
+    <Link className="link" to={groupPath}>
       {props.group.displayName}
-    </div>
+    </Link>
   );
 }
 
@@ -35,6 +37,8 @@ class Home extends React.Component {
     };
 
     this.handleLogout = this.handleLogout.bind(this);
+    this.getUserData = this.getUserData.bind(this);
+    this.getUserGroups = this.getUserGroups.bind(this);
   }
 
   handleLogout() {
