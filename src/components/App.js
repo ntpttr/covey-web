@@ -41,7 +41,7 @@ class App extends React.Component {
             />
             <PrivateRoute
               path="/account"
-              component={() => <Account updateCurrentUser={this.updateCurrentUser} />}
+              component={() => <Account />}
             />
             <Route
               path="/login"

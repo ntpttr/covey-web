@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 
+import { logout } from '../helpers';
 import { userService } from '../services';
 
 const GroupCard = (props) => {
@@ -42,7 +43,7 @@ class Home extends React.Component {
   }
 
   handleLogout() {
-    userService.logout();
+    logout();
     this.props.updateCurrentUser(null);
   }
 
@@ -51,7 +52,7 @@ class Home extends React.Component {
       const user = await userService.getCurrentUser();
       this.setState({
         username: user.username,
-        name: user.name,
+        name: (user.name != null) ? user.name : user.username,
         userImage: user.image,
       });
     } catch (message) {
@@ -88,7 +89,7 @@ class Home extends React.Component {
   render() {
     return (
       <div>
-        <h1>Hi, {this.state.username}!</h1>
+        <h1>Hi, {this.state.name}!</h1>
         <div>
           Groups:
           {this.renderGroups(this.state.groups)}

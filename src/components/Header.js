@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import '../styles/css/Header.min.css';
-import { userService } from '../services';
+import { logout } from '../helpers';
 
 const ActionsView = (props) => {
   // Logged in action bar
@@ -68,7 +68,7 @@ class Header extends React.Component {
   }
 
   handleLogout() {
-    userService.logout();
+    logout();
     this.props.updateCurrentUser(null);
   }
 

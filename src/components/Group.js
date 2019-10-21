@@ -55,7 +55,7 @@ class Group extends React.Component {
     if (games !== null) {
       return (
         <div>
-          {games.map((game) => <GameCard key={game._id} game={game} />)}
+          {games.map((game) => <GameCard key={game.name} game={game} />)}
         </div>
       );
     }
