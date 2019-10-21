@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Router } from 'react-router-dom';
 import '../styles/css/App.min.css';
 
-import { Account, Header, Home, Login, Register, PrivateRoute } from '../components';
+import { Account, Group, Header, Home, Login, Register, PrivateRoute } from '../components';
 import { history, getCurrentUser } from '../helpers';
 
 class App extends React.Component {
@@ -50,6 +50,10 @@ class App extends React.Component {
             <Route
               path="/register"
               component={() => <Register updateCurrentUser={this.updateCurrentUser} />}
+            />
+            <Route
+              path="/group/:groupIdent"
+              component={(props) => <Group identifier={props.match.params.groupIdent} />}
             />
           </div>
         </Router>

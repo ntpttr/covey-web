@@ -1,4 +1,4 @@
-import { authHeader } from '../helpers';
+import { authHeader, handleResponse, logout } from '../helpers';
 
 export const userService = {
     login,
@@ -7,10 +7,9 @@ export const userService = {
     registerUser,
     updateUser,
     deleteUser,
-    logout
 };
 
-const url = 'http://localhost:3000';
+const url = process.env.REACT_APP_COVEY_SERVER_URL;
 
 function getCurrentUser() {
     const requestOptions = {
@@ -63,10 +62,7 @@ function registerUser(username, email, password) {
     }
 
     return fetch(`${url}/users`, requestOptions)
-    .then(handleResponse)
-    .then(response => {
-        return response.message;
-    });
+    .then(handleResponse);
 }
 
 function updateUser(properties) {
@@ -82,7 +78,7 @@ function updateUser(properties) {
         // store jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem('currentUser', JSON.stringify(response.user));
 
-        return response.user;
+        return response;
     });
 }
 
@@ -96,30 +92,5 @@ function deleteUser() {
     .then(handleResponse)
     .then(response => {
         logout();
-    });
-}
-
-function logout() {
-    // remove user from local storage to log user out
-    localStorage.removeItem('currentUser');
-}
-
-function handleResponse(response) {
-    return response.text().then(text => {
-        const data = text && JSON.parse(text);
-
-        if (!response.ok) {
-            if (response.status === 401) {
-                // auto logout if 401 response returned from api
-                logout();
-                window.location.reload(true);
-            }
-
-            const error = (data && data.message) || response.statusText;
-            return Promise.reject(error);
-        }
-
-
-        return data;
     });
 }
