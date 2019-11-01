@@ -1,23 +1,7 @@
 import React from 'react';
 
+import { GameCard, MemberCard } from './Cards';
 import { groupService } from '../services';
-
-const GameCard = (props) => {
-  return (
-    <div>
-      {props.game.name}
-      {props.game.description}
-    </div>
-  );
-}
-
-const MemberCard = (props) => {
-  return (
-    <div>
-      {props.member.username}
-    </div>
-  );
-}
 
 class Group extends React.Component {
   constructor(props) {
