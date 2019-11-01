@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 
 import { userService } from '../services';
+import { logout } from '../helpers';
 
 const GroupCard = (props) => {
   let groupPath = "/group/" + props.group.identifier;
@@ -42,7 +43,7 @@ class Home extends React.Component {
   }
 
   handleLogout() {
-    userService.logout();
+    logout();
     this.props.updateCurrentUser(null);
   }
 
