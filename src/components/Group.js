@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { GameCard, MemberCard } from './Cards';
+import { GameCard, MemberCard, PlayCard } from './Cards';
 import { groupService } from '../services';
 
 class Group extends React.Component {
@@ -12,9 +12,11 @@ class Group extends React.Component {
       description: null,
       games: null,
       members: null,
+      plays: null,
     };
 
     this.getGroupDetails = this.getGroupDetails.bind(this);
+    this.getGroupPlays = this.getGroupPlays.bind(this);
   }
 
   getGroupDetails = async () => {
@@ -31,15 +33,33 @@ class Group extends React.Component {
     }
   }
 
+  getGroupPlays = async () => {
+    try {
+      const response = await groupService.getGroupPlays(this.props.identifier);
+      this.setState({
+        plays: response.plays,
+      });
+    } catch (message) {
+      alert(message);
+    }
+  }
+
   componentDidMount() {
     this.getGroupDetails();
+    this.getGroupPlays();
   }
 
   renderGames(games) {
     if (games !== null) {
       return (
         <div>
-          {games.map((game) => <GameCard key={game._id} game={game} />)}
+          {
+            games.map((game) =>
+            <GameCard
+              key={game._id}
+              game={game}
+              />)
+          }
         </div>
       );
     }
@@ -49,7 +69,30 @@ class Group extends React.Component {
     if (members !== null) {
       return (
         <div>
-          {members.map((member) => <MemberCard key={member.username} member={member} />)}
+          {
+            members.map((member) =>
+            <MemberCard
+              key={member.username}
+              member={member}
+            />)
+          }
+        </div>
+      );
+    }
+  }
+
+  renderPlays(plays) {
+    if (plays !== null) {
+      return (
+        <div>
+          {
+            plays.map((play) => 
+            <PlayCard 
+              key={play._id}
+              game={play.game} 
+              players={play.players}
+            />)
+          }
         </div>
       );
     }
@@ -69,6 +112,10 @@ class Group extends React.Component {
         <div>
           Members:
           {this.renderMembers(this.state.members)}
+        </div>
+        <div>
+          Plays:
+          {this.renderPlays(this.state.plays)}
         </div>
       </div>
     );
