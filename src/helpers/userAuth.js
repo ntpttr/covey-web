@@ -1,3 +1,5 @@
+import { history } from '../helpers';
+
 export function authHeader() {
   // return authorization header with jwt token
   let currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -24,5 +26,6 @@ export function getCurrentUser() {
 
 export function logout() {
   // remove user from local storage to log user out
+  history.push('/');
   localStorage.removeItem('currentUser');
 }
