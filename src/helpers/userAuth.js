@@ -26,6 +26,6 @@ export function getCurrentUser() {
 
 export function logout() {
   // remove user from local storage to log user out
-  history.push('/');
   localStorage.removeItem('currentUser');
+  history.push('/');
 }

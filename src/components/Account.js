@@ -67,6 +67,7 @@ class Account extends React.Component {
       await userService.deleteUser();
       alert('Account deleted');
       logout();
+      this.props.updateCurrentUser(null);
     } catch (message) {
       alert(message);
       this.state.isLoading = false;

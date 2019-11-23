@@ -47,7 +47,6 @@ class Register extends React.Component {
         this.state.username,
         this.state.email,
         this.state.password);
-      alert(message);
       history.push('/');
     } catch (message) {
       alert(message);

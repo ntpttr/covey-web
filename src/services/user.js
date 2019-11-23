@@ -1,4 +1,4 @@
-import { authHeader, handleResponse, logout } from '../helpers';
+import { authHeader, handleResponse } from '../helpers';
 
 export const userService = {
     login,
@@ -89,8 +89,5 @@ function deleteUser() {
     }
 
     return fetch(`${url}/me`, requestOptions)
-    .then(handleResponse)
-    .then(response => {
-        logout();
-    });
+    .then(handleResponse);
 }
