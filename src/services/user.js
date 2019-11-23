@@ -75,9 +75,6 @@ function updateUser(properties) {
     return fetch(`${url}/me`, requestOptions)
     .then(handleResponse)
     .then(response => {
-        // store jwt token in local storage to keep user logged in between page refreshes
-        localStorage.setItem('currentUser', JSON.stringify(response.user));
-
         return response;
     });
 }

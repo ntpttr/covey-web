@@ -46,14 +46,13 @@ class Account extends React.Component {
 
     try {
       this.state.isLoading = true;
-      const user = await userService.updateUser(body);
+      await userService.updateUser(body);
       this.setState({
         name: '',
         email: '',
         password: '',
         passwordConfirm: '',
       });
-      this.props.updateCurrentUser(user);
       alert('Your profile has been updated.');
     } catch (message) {
       alert(message);
