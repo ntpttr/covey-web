@@ -24,22 +24,28 @@ class Login extends React.Component {
     this.setState({ [name]: value });
   }
 
-  handleSubmit = async event => {
+  handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!this.state.identifier || !this.state.password) {
+    const { identifier, password } = this.state;
+
+    if (!identifier || !password) {
       alert('Must fill out username/email and password!');
       return;
     }
 
+    this.setState({
+      identifier: '',
+      password: '',
+    });
+
     try {
       this.state.loggingIn = true;
-      const user = await userService.login(this.state.identifier, this.state.password);
+      const user = await userService.login(identifier, password);
       this.props.updateCurrentUser(user);
       history.push('/');
     } catch (message) {
       alert(message);
-      this.props.updateCurrentUser(null);
       this.state.loggingIn = false;
     }
   }
