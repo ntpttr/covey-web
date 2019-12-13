@@ -1,17 +1,8 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
 
-import { logout } from '../helpers';
+import { GroupCard } from './Cards';
 import { userService } from '../services';
-
-const GroupCard = (props) => {
-  let groupPath = "/group/" + props.group.identifier;
-  return (
-    <Link className="link" to={groupPath}>
-      {props.group.displayName}
-    </Link>
-  );
-}
+import { logout } from '../helpers';
 
 class Home extends React.Component {
   constructor(props) {

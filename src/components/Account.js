@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { history } from '../helpers';
+import { logout } from '../helpers';
 import { userService } from '../services';
 
 class Account extends React.Component {
@@ -65,7 +65,8 @@ class Account extends React.Component {
       this.state.isLoading = true;
       await userService.deleteUser();
       alert('Account deleted');
-      history.push('/');
+      logout();
+      this.props.updateCurrentUser(null);
     } catch (message) {
       alert(message);
       this.state.isLoading = false;

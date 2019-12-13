@@ -1,4 +1,4 @@
-import { authHeader, handleResponse, logout } from '../helpers';
+import { authHeader, handleResponse } from '../helpers';
 
 export const userService = {
     login,
@@ -75,9 +75,6 @@ function updateUser(properties) {
     return fetch(`${url}/me`, requestOptions)
     .then(handleResponse)
     .then(response => {
-        // store jwt token in local storage to keep user logged in between page refreshes
-        localStorage.setItem('currentUser', JSON.stringify(response.user));
-
         return response;
     });
 }
@@ -89,8 +86,5 @@ function deleteUser() {
     }
 
     return fetch(`${url}/me`, requestOptions)
-    .then(handleResponse)
-    .then(response => {
-        logout();
-    });
+    .then(handleResponse);
 }

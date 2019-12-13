@@ -43,11 +43,10 @@ class Register extends React.Component {
 
     try {
       this.state.loggingIn = true;
-      const message = await userService.registerUser(
+      await userService.registerUser(
         this.state.username,
         this.state.email,
         this.state.password);
-      alert(message);
       history.push('/');
     } catch (message) {
       alert(message);
